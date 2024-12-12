@@ -1,4 +1,8 @@
 import 'package:clean_ease/view/automated_laundry_page_view.dart';
+import 'package:clean_ease/view/dry_cleaning_page_view.dart';
+import 'package:clean_ease/view/notification_view.dart';
+import 'package:clean_ease/view/only_press_page_view.dart';
+import 'package:clean_ease/view/shoe_cleaning_page_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenView extends StatelessWidget {
@@ -9,16 +13,25 @@ class HomeScreenView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.cyan,
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: const Row(
           children: [
-            Text(
-              'Prabin Tiwari',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            CircleAvatar(
+              radius: 20, // Adjust the size of the profile icon
+              backgroundImage: AssetImage('assets/images/image1.jpg'),
             ),
-            Text(
-              'Dillibazar, Kathmandu',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+            SizedBox(width: 10), // Add spacing between the image and the text
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Prabin Tiwari',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+                Text(
+                  'Dillibazar, Kathmandu',
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+              ],
             ),
           ],
         ),
@@ -29,7 +42,12 @@ class HomeScreenView extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationView()));
+            },
           ),
         ],
       ),
@@ -57,19 +75,19 @@ class HomeScreenView extends StatelessWidget {
                       'Dry Cleaning',
                       'assets/images/folded clothes.png',
                       Colors.pinkAccent,
-                      const DryCleaningPage()),
+                      const DryCleaningPageView()),
                   _buildServiceCard(
                       context,
                       'Only Press',
                       'assets/images/iron.jpg',
                       Colors.green,
-                      const OnlyPressPage()),
+                      const OnlyPressPageView()),
                   _buildServiceCard(
                       context,
                       'Shoe Cleaning',
                       'assets/images/shoe.jpg',
                       Colors.orange,
-                      const ShoeCleaningPage()),
+                      const ShoeCleaningPageView()),
                 ],
               ),
               const SizedBox(height: 20),
@@ -134,14 +152,29 @@ class HomeScreenView extends StatelessWidget {
         decoration: BoxDecoration(
           color: color.withOpacity(0.2),
           borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(2, 2),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(assetPath, height: 60),
-            const SizedBox(height: 8),
+            Expanded(
+              child: Image.asset(
+                assetPath,
+                height: 120, // Increased size
+                width: 140, // Make it proportional
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 10),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -151,42 +184,6 @@ class HomeScreenView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DryCleaningPage extends StatelessWidget {
-  const DryCleaningPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Dry Cleaning')),
-      body: const Center(child: Text('Dry Cleaning Page')),
-    );
-  }
-}
-
-class OnlyPressPage extends StatelessWidget {
-  const OnlyPressPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Only Press')),
-      body: const Center(child: Text('Only Press Page')),
-    );
-  }
-}
-
-class ShoeCleaningPage extends StatelessWidget {
-  const ShoeCleaningPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Shoe Cleaning')),
-      body: const Center(child: Text('Shoe Cleaning Page')),
     );
   }
 }
