@@ -5,7 +5,6 @@ class SplashScreenView extends StatefulWidget {
   const SplashScreenView({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SplashScreenViewState createState() => _SplashScreenViewState();
 }
 
@@ -49,7 +48,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
         children: [
           PageView.builder(
             controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(), // Disables animation
+            physics: const NeverScrollableScrollPhysics(),
             onPageChanged: (index) {
               setState(() {
                 _currentPage = index;
@@ -57,16 +56,15 @@ class _SplashScreenViewState extends State<SplashScreenView> {
             },
             itemCount: _sections.length,
             itemBuilder: (context, index) {
-              final section = _sections[index]; // Get the current section
+              final section = _sections[index];
               return Column(
                 children: [
                   const SizedBox(
                     height: 60,
-                  ), // Adjust spacing to move elements upward
+                  ),
                   Center(
                     child: Container(
-                      padding: const EdgeInsets.all(
-                          24), // Increased padding for larger container
+                      padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
@@ -88,9 +86,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                      height: 20), // Adjust spacing between container and text
-                  // Message below the container
+                  const SizedBox(height: 20),
                   Text(
                     section["message"]!, // Dynamic message
                     textAlign: TextAlign.center,
