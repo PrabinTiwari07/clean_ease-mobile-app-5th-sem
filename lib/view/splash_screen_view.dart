@@ -61,18 +61,36 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               return Column(
                 children: [
                   const SizedBox(
-                      height: 60), // Adjust spacing to move elements upward
-                  // Direct Image
+                    height: 60,
+                  ), // Adjust spacing to move elements upward
                   Center(
-                    child: Image.asset(
-                      section["image"]!, // Dynamic image
-                      height: 150,
-                      width: 150,
+                    child: Container(
+                      padding: const EdgeInsets.all(
+                          24), // Increased padding for larger container
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 3,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        section["image"]!, // Dynamic image
+                        height: 400, // Increased height for larger image
+                        width: 400, // Increased width for larger image
+                        fit: BoxFit
+                            .cover, // Ensures the image covers the given space
+                      ),
                     ),
                   ),
                   const SizedBox(
-                      height: 20), // Adjust spacing between image and text
-                  // Message below the image
+                      height: 20), // Adjust spacing between container and text
+                  // Message below the container
                   Text(
                     section["message"]!, // Dynamic message
                     textAlign: TextAlign.center,
