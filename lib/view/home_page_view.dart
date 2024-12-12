@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class HomeScreenView extends StatelessWidget {
   const HomeScreenView({super.key});
@@ -13,10 +12,10 @@ class HomeScreenView extends StatelessWidget {
         title: const Row(
           children: [
             CircleAvatar(
-              radius: 20, // Adjust the size of the profile icon
+              radius: 20,
               backgroundImage: AssetImage('assets/images/image1.jpg'),
             ),
-            SizedBox(width: 10), // Add spacing between the image and the text
+            SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -49,71 +48,149 @@ class HomeScreenView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _buildServiceCard(
-                      context,
-                      'Automated Laundry',
-                      'assets/images/washingmachine.png',
-                      Colors.lightBlue,
-                      const Text('Automated Laundry Page')),
-                  _buildServiceCard(
-                      context,
-                      'Dry Cleaning',
-                      'assets/images/folded clothes.png',
-                      Colors.pinkAccent,
-                      const Text('Dry Cleaning Page')),
-                  _buildServiceCard(
-                      context,
-                      'Only Press',
-                      'assets/images/iron.jpg',
-                      Colors.green,
-                      const Text('Only Press Page')),
-                  _buildServiceCard(
-                      context,
-                      'Shoe Cleaning',
-                      'assets/images/shoe.jpg',
-                      Colors.orange,
-                      const Text('Shoe Cleaning Page')),
-                ],
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.purpleAccent,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Price List',
+              // First Section: Our Services
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Our Services',
                       style: TextStyle(
-                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 16.0,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        _buildServiceCard(
+                          context,
+                          'Automated Laundry',
+                          'assets/images/washingmachine.png',
+                          Colors.orange,
+                          const Text(
+                            'Automated Laundry Page',
+                          ),
+                        ),
+                        _buildServiceCard(
+                            context,
+                            'Dry Cleaning',
+                            'assets/images/folded clothes.png',
+                            Colors.orange,
+                            const Text(
+                              'Dry Cleaning Page',
+                            )),
+                        _buildServiceCard(
+                            context,
+                            'Only Press',
+                            'assets/images/iron.jpg',
+                            Colors.orange,
+                            const Text(
+                              'Only Press Page',
+                            )),
+                        _buildServiceCard(
+                            context,
+                            'Shoe Cleaning',
+                            'assets/images/shoe.jpg',
+                            Colors.orange,
+                            const Text(
+                              'Shoe Cleaning Page',
+                            )),
+                      ],
+                    ),
+                  ],
                 ),
               ),
+
               const SizedBox(height: 20),
-              const Text(
-                'Our Offers',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+
+              // Second Section: Price List
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Price List',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 10),
-              _buildPromotionalBanner(),
+
+              const SizedBox(height: 20),
+
+              // Third Section: Our Offers
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Our Offers',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildPromotionalBanner(),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -273,10 +350,10 @@ class HomeScreenView extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: color,
+                color: Colors.black,
               ),
             ),
           ],
@@ -285,8 +362,3 @@ class HomeScreenView extends StatelessWidget {
     );
   }
 }
-
-void main() => runApp(const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreenView(),
-    ));
