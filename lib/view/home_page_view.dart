@@ -1,9 +1,6 @@
-import 'package:clean_ease/view/automated_laundry_page_view.dart';
-import 'package:clean_ease/view/dry_cleaning_page_view.dart';
-import 'package:clean_ease/view/notification_view.dart';
-import 'package:clean_ease/view/only_press_page_view.dart';
-import 'package:clean_ease/view/shoe_cleaning_page_view.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreenView extends StatelessWidget {
   const HomeScreenView({super.key});
@@ -42,12 +39,7 @@ class HomeScreenView extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const NotificationView()));
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -69,25 +61,25 @@ class HomeScreenView extends StatelessWidget {
                       'Automated Laundry',
                       'assets/images/washingmachine.png',
                       Colors.lightBlue,
-                      const AutomatedLaundryViewPage()),
+                      const Text('Automated Laundry Page')),
                   _buildServiceCard(
                       context,
                       'Dry Cleaning',
                       'assets/images/folded clothes.png',
                       Colors.pinkAccent,
-                      const DryCleaningPageView()),
+                      const Text('Dry Cleaning Page')),
                   _buildServiceCard(
                       context,
                       'Only Press',
                       'assets/images/iron.jpg',
                       Colors.green,
-                      const OnlyPressPageView()),
+                      const Text('Only Press Page')),
                   _buildServiceCard(
                       context,
                       'Shoe Cleaning',
                       'assets/images/shoe.jpg',
                       Colors.orange,
-                      const ShoeCleaningPageView()),
+                      const Text('Shoe Cleaning Page')),
                 ],
               ),
               const SizedBox(height: 20),
@@ -111,13 +103,24 @@ class HomeScreenView extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              const Text(
+                'Our Offers',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _buildPromotionalBanner(),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.cyan,
+        selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
@@ -141,6 +144,101 @@ class HomeScreenView extends StatelessWidget {
     );
   }
 
+  Widget _buildPromotionalBanner() {
+    final DateTime offerEndDate = DateTime.now().add(const Duration(days: 5));
+
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 150.0,
+        autoPlay: true,
+        enlargeCenterPage: true,
+      ),
+      items: [
+        {
+          'title': '20% Off on Dry Cleaning!',
+          'description':
+              'Hurry up! Offer ends in ${_getRemainingDays(offerEndDate)} days!',
+          'color': Colors.lightBlue,
+          'image': 'assets/images/folded clothes.png',
+        },
+        {
+          'title': 'Flat 15% Off on Shoe Cleaning!',
+          'description': 'Limited time offer. Don\'t miss out!',
+          'color': const Color.fromARGB(255, 85, 163, 226),
+          'image': 'assets/images/best.png',
+        },
+        {
+          'title': 'Exclusive 10% Off on Laundry!',
+          'description': 'Book now and save big!',
+          'color': const Color.fromARGB(255, 55, 157, 240),
+          'image': 'assets/images/folded clothes.png',
+        },
+      ].map((offer) {
+        final String title = offer['title'] as String;
+        final String description = offer['description'] as String;
+        final Color color = offer['color'] as Color;
+        final String image = offer['image'] as String;
+
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                      height: 100,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          description,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  int _getRemainingDays(DateTime endDate) {
+    final DateTime now = DateTime.now();
+    return endDate.difference(now).inDays;
+  }
+
   Widget _buildServiceCard(BuildContext context, String title, String assetPath,
       Color color, Widget targetPage) {
     return GestureDetector(
@@ -152,7 +250,7 @@ class HomeScreenView extends StatelessWidget {
         decoration: BoxDecoration(
           color: color.withOpacity(0.2),
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black12,
               blurRadius: 4,
@@ -166,8 +264,8 @@ class HomeScreenView extends StatelessWidget {
             Expanded(
               child: Image.asset(
                 assetPath,
-                height: 120, // Increased size
-                width: 140, // Make it proportional
+                height: 120,
+                width: 140,
                 fit: BoxFit.contain,
               ),
             ),
