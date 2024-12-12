@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:clean_ease/view/dashboard_view.dart';
-import 'package:clean_ease/view/signup_view.dart'; // Import SignupView here
+import 'package:clean_ease/view/home_page_view.dart';
+import 'package:clean_ease/view/signup_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginViewState createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
-  final _formKey = GlobalKey<FormState>(); // Key to validate the form
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false; // Toggle password visibility
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class _LoginViewState extends State<LoginView> {
       appBar: AppBar(
         title: const Text("Login"),
         centerTitle: true,
-        backgroundColor: Colors.amber,
+        backgroundColor: const Color(0xFF00CED1),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -36,7 +37,6 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 const SizedBox(height: 20),
 
-                // Form Section
                 Form(
                   key: _formKey,
                   child: Column(
@@ -94,14 +94,11 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       const SizedBox(height: 10),
 
-                      // Forgot Password & Remember Me
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                            onPressed: () {
-                              // Handle forgot password
-                            },
+                            onPressed: () {},
                             child: const Text(
                               "Forgot Password?",
                               style: TextStyle(color: Colors.blue),
@@ -111,9 +108,7 @@ class _LoginViewState extends State<LoginView> {
                             children: [
                               Checkbox(
                                 value: true,
-                                onChanged: (value) {
-                                  // Handle remember me checkbox
-                                },
+                                onChanged: (value) {},
                               ),
                               const Text("Remember Me"),
                             ],
@@ -126,18 +121,18 @@ class _LoginViewState extends State<LoginView> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Navigate to Dashboard on successful validation
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const DashboardView(),
+                                builder: (context) => HomeScreenView(),
                               ),
                             );
                           }
                         },
                         child: const Text("Login"),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber,
+                          backgroundColor: const Color(0xFF00CED1),
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           textStyle: const TextStyle(fontSize: 18),
                         ),
