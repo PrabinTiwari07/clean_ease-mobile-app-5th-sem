@@ -19,7 +19,7 @@ class _SignupViewState extends State<SignupView> {
       appBar: AppBar(
         title: const Text("Sign up"),
         centerTitle: true,
-        backgroundColor: const Color(0xFF00CED1), // Custom color
+        backgroundColor: const Color(0xFF00CED1),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -28,11 +28,10 @@ class _SignupViewState extends State<SignupView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Replace Sign up text with image icon
                 Image.asset(
-                  'assets/images/cleanEase.png', // Update this path to your image icon
-                  height: 100, // Adjust height as per your preference
-                  width: 100, // Adjust width as per your preference
+                  'assets/images/cleanEase.png',
+                  height: 100,
+                  width: 100,
                 ),
                 const SizedBox(height: 20),
                 Form(
@@ -40,7 +39,6 @@ class _SignupViewState extends State<SignupView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Username Text Field
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: "Username",
@@ -54,8 +52,6 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-
-                      // Email Text Field
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: "Email",
@@ -73,8 +69,6 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-
-                      // Phone Number Text Field
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: "Phone No:",
@@ -92,8 +86,6 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-
-                      // Password Text Field
                       TextFormField(
                         decoration: InputDecoration(
                           labelText: "Password",
@@ -123,8 +115,6 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-
-                      // Confirm Password Text Field
                       TextFormField(
                         decoration: InputDecoration(
                           labelText: "Confirm password",
@@ -152,8 +142,6 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 20),
-
-                      // Register Button
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -165,6 +153,7 @@ class _SignupViewState extends State<SignupView> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF00CED1),
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           textStyle: const TextStyle(fontSize: 18),
                         ),
@@ -211,7 +200,6 @@ class _SignupViewState extends State<SignupView> {
                 // ),
                 // const SizedBox(height: 20),
 
-                // Already Have an Account? Login Now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -223,7 +211,7 @@ class _SignupViewState extends State<SignupView> {
                       child: const Text(
                         "Login Now",
                         style: TextStyle(
-                          color: Colors.green,
+                          color: Colors.blue,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
