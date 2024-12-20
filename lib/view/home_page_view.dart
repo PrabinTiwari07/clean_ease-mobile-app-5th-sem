@@ -110,7 +110,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
 
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(screenWidth * 0.04), // Responsive padding
+        padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -235,7 +235,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 200.0, // Increased height for better fit
+        height: 200.0,
         autoPlay: true,
         enlargeCenterPage: true,
       ),
@@ -285,7 +285,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             child: Image.asset(
               offer['image'] as String,
               fit: BoxFit.contain,
-              height: 100, // Increased height for prominence
+              height: 100,
             ),
           ),
           const SizedBox(width: 12),
