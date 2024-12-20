@@ -48,7 +48,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.cyan,
+        backgroundColor: Colors.teal,
         title: Row(
           children: [
             const CircleAvatar(
@@ -56,16 +56,22 @@ class _HomeScreenViewState extends State<HomeScreenView> {
               backgroundImage: AssetImage('assets/images/image1.jpg'),
             ),
             SizedBox(width: screenWidth * 0.02),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Prabin Tiwari',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayMedium
+                      ?.copyWith(color: Colors.white),
                 ),
                 Text(
                   'Dillibazar, Kathmandu',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.white70),
                 ),
               ],
             ),
@@ -115,13 +121,9 @@ class _HomeScreenViewState extends State<HomeScreenView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Our Services',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                   const SizedBox(height: 10),
                   LayoutBuilder(
@@ -179,13 +181,9 @@ class _HomeScreenViewState extends State<HomeScreenView> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Price List',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                   IconButton(
                     onPressed: () {},
@@ -203,17 +201,23 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             // Third Section: Our Offers
             Container(
               padding: EdgeInsets.all(screenWidth * 0.04),
-              decoration: _boxDecoration(),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Our Offers',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                   const SizedBox(height: 10),
                   _buildPromotionalBanner(),
@@ -231,7 +235,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 150.0,
+        height: 200.0, // Increased height for better fit
         autoPlay: true,
         enlargeCenterPage: true,
       ),
@@ -240,73 +244,78 @@ class _HomeScreenViewState extends State<HomeScreenView> {
           'title': '20% Off on Dry Cleaning!',
           'description':
               'Hurry up! Offer ends in ${_getRemainingDays(offerEndDate)} days!',
-          'color': Colors.lightBlue,
+          'color': Colors.lightBlue.shade400,
           'image': 'assets/images/folded clothes.png',
         },
         {
           'title': 'Flat 15% Off on Shoe Cleaning!',
           'description': 'Limited time offer. Don\'t miss out!',
-          'color': const Color.fromARGB(255, 85, 163, 226),
-          'image': 'assets/images/best.png',
+          'color': Colors.blue.shade300,
+          'image': 'assets/images/shoe.jpg',
         },
       ].map((offer) {
-        final String title = offer['title'] as String;
-        final String description = offer['description'] as String;
-        final Color color = offer['color'] as Color;
-        final String image = offer['image'] as String;
-
-        return Builder(
-          builder: (BuildContext context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Image.asset(
-                      image,
-                      fit: BoxFit.cover,
-                      height: 100,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          description,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+        return _buildOfferCard(offer);
       }).toList(),
+    );
+  }
+
+  Widget _buildOfferCard(Map<String, dynamic> offer) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [offer['color'] as Color, Colors.white],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 6,
+            offset: Offset(2, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Image.asset(
+              offer['image'] as String,
+              fit: BoxFit.contain,
+              height: 100, // Increased height for prominence
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  offer['title'] as String,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  offer['description'] as String,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.black54,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -347,11 +356,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
