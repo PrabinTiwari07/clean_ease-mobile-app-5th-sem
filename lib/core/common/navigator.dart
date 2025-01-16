@@ -15,7 +15,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF00CED1), Color(0xFF008080)], // Gradient effect
+          colors: [Color(0xFF00CED1), Color(0xFF008080)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -25,7 +25,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black26, // More prominent shadow for depth
+            color: Colors.black26,
             offset: Offset(0, -4),
             blurRadius: 10,
           ),
@@ -33,12 +33,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ),
       child: BottomNavigationBar(
         elevation: 0,
-        backgroundColor: Colors.transparent, // Transparent background
+        backgroundColor: Colors.transparent,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
         showSelectedLabels: true,
-        showUnselectedLabels: false, // Cleaner design with no unselected labels
+        showUnselectedLabels: false,
         selectedFontSize: 12.0,
         unselectedFontSize: 10.0,
         currentIndex: currentIndex,
@@ -56,7 +56,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               ),
               child: Icon(
                 _getIcon(index),
-                size: isSelected ? 28.0 : 24.0, // Size transition for the icon
+                size: isSelected ? 28.0 : 24.0,
                 color: Colors.white,
               ),
             ),

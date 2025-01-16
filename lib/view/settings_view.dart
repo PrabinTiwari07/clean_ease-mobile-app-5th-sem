@@ -1,4 +1,4 @@
-import 'package:clean_ease/common/navigator.dart';
+import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/view/calendar_view.dart';
 import 'package:clean_ease/view/home_page_view.dart';
 import 'package:clean_ease/view/order_view.dart';
@@ -12,17 +12,17 @@ class SettingsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings Page"),
+        centerTitle: true,
       ),
       body: const Center(
         child: Text(
-          'Settings Content Goes Here',
+          'Settings Screen',
           style: TextStyle(fontSize: 18),
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 3, // Index for Settings page
+        currentIndex: 3,
         onTap: (int index) {
-          // Handle navigation based on index
           switch (index) {
             case 0:
               Navigator.pushReplacement(
@@ -43,7 +43,6 @@ class SettingsView extends StatelessWidget {
               );
               break;
             case 3:
-              // Do nothing, we're already on the Settings page
               break;
           }
         },

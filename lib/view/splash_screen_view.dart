@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'login_view.dart';
 
 class SplashScreenView extends StatefulWidget {
@@ -12,15 +13,14 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // Updated List with Messages and Image Paths
   final List<Map<String, String>> _sections = [
     {
       "message": "Best for laundry service",
-      "image": "assets/images/best_laundry.jpg",
+      "image": "assets/images/onboarding.png",
     },
     {
       "message": "Highly professional staff",
-      "image": "assets/images/highlevelstaff.png",
+      "image": "assets/images/a.jpg",
     },
     {
       "message": "Affordable and efficient solutions",
@@ -30,6 +30,11 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
   @override
   Widget build(BuildContext context) {
+    // Use MediaQuery to get screen dimensions
+    final Size screenSize = MediaQuery.of(context).size;
+    final bool isTablet = screenSize.width >= 600 && screenSize.width < 1024;
+    final bool isDesktop = screenSize.width >= 1024;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF00CED1),
@@ -57,49 +62,57 @@ class _SplashScreenViewState extends State<SplashScreenView> {
             itemCount: _sections.length,
             itemBuilder: (context, index) {
               final section = _sections[index];
-              return Column(
-                children: [
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 3,
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
+
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Responsive Image without the container
+                    Image.asset(
+                      section["image"]!,
+                      height: isDesktop
+                          ? 500
+                          : isTablet
+                              ? 400
+                              : 300,
+                      width: isDesktop
+                          ? 500
+                          : isTablet
+                              ? 400
+                              : 300,
+                      fit: BoxFit.cover,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Responsive Message Text
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isDesktop
+                            ? screenSize.width * 0.3
+                            : isTablet
+                                ? screenSize.width * 0.1
+                                : 16.0,
                       ),
-                      child: Image.asset(
-                        section["image"]!, // Dynamic image
-                        height: 400, // Increased height for larger image
-                        width: 400, // Increased width for larger image
-                        fit: BoxFit
-                            .cover, // Ensures the image covers the given space
+                      child: Text(
+                        section["message"]!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: isDesktop
+                              ? 28
+                              : isTablet
+                                  ? 24
+                                  : 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    section["message"]!, // Dynamic message
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
+
           // Skip Button
           Positioned(
             bottom: 20,
@@ -119,6 +132,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               ),
             ),
           ),
+
           // Next or Get Started Button
           Positioned(
             bottom: 20,
@@ -144,8 +158,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                 : TextButton(
                     onPressed: () {
                       setState(() {
-                        _pageController
-                            .jumpToPage(_currentPage + 1); // Direct jump
+                        _pageController.jumpToPage(_currentPage + 1);
                       });
                     },
                     child: const Text(
@@ -154,6 +167,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                     ),
                   ),
           ),
+
           // Page Indicator
           Positioned(
             bottom: 20,

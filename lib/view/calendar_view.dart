@@ -1,4 +1,4 @@
-import 'package:clean_ease/common/navigator.dart';
+import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/view/home_page_view.dart';
 import 'package:clean_ease/view/order_view.dart';
 import 'package:clean_ease/view/settings_view.dart';
@@ -16,7 +16,7 @@ class CalendarView extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Calendar Content Goes Here',
+          'Calendar Screen',
           style: TextStyle(fontSize: 18),
         ),
       ),

@@ -1,4 +1,4 @@
-import 'package:clean_ease/common/navigator.dart';
+import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/view/calendar_view.dart';
 import 'package:clean_ease/view/home_page_view.dart';
 import 'package:clean_ease/view/settings_view.dart';
@@ -16,14 +16,13 @@ class OrderView extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Order Content Goes Here',
+          'Order Screen',
           style: TextStyle(fontSize: 18),
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 2, // Index for the Order page
+        currentIndex: 2,
         onTap: (int index) {
-          // Handle navigation based on the index
           switch (index) {
             case 0:
               Navigator.pushReplacement(
@@ -42,7 +41,6 @@ class OrderView extends StatelessWidget {
               );
               break;
             case 2:
-              // Already on the Order page
               break;
             case 3:
               Navigator.pushReplacement(

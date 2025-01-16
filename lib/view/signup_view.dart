@@ -15,35 +15,72 @@ class _SignupViewState extends State<SignupView> {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+
+    final bool isTablet = screenSize.width >= 600 && screenSize.width < 1024;
+    final bool isDesktop = screenSize.width >= 1024;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sign up"),
+        title: const Text("Sign up Page"),
         centerTitle: true,
         backgroundColor: const Color(0xFF00CED1),
+        elevation: 0,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: isDesktop
+                ? screenSize.width * 0.2
+                : isTablet
+                    ? screenSize.width * 0.1
+                    : 16.0,
+          ),
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.asset(
-                  'assets/images/cleanEase.png',
-                  height: 100,
-                  width: 100,
+                // Responsive Logo
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Image.asset(
+                      'assets/images/cleanEase.png',
+                      height: isDesktop
+                          ? 150
+                          : isTablet
+                              ? 120
+                              : 100,
+                      width: isDesktop
+                          ? 150
+                          : isTablet
+                              ? 120
+                              : 100,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
+
+                // Form Section
                 Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: "Username",
-                          border: OutlineInputBorder(),
-                        ),
+                      // Username Field
+                      _buildTextField(
+                        label: "Username",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please enter your username";
@@ -52,11 +89,10 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: "Email",
-                          border: OutlineInputBorder(),
-                        ),
+
+                      // Email Field
+                      _buildTextField(
+                        label: "Email",
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -69,11 +105,10 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: "Phone No:",
-                          border: OutlineInputBorder(),
-                        ),
+
+                      // Phone Field
+                      _buildTextField(
+                        label: "Phone No:",
                         keyboardType: TextInputType.phone,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -86,24 +121,16 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _isPasswordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isPasswordVisible = !_isPasswordVisible;
-                              });
-                            },
-                          ),
-                        ),
-                        obscureText: !_isPasswordVisible,
+
+                      // Password Field
+                      _buildPasswordField(
+                        label: "Password",
+                        isVisible: _isPasswordVisible,
+                        onToggleVisibility: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please enter your password";
@@ -115,25 +142,17 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Confirm password",
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _isConfirmPasswordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isConfirmPasswordVisible =
-                                    !_isConfirmPasswordVisible;
-                              });
-                            },
-                          ),
-                        ),
-                        obscureText: !_isConfirmPasswordVisible,
+
+                      // Confirm Password Field
+                      _buildPasswordField(
+                        label: "Confirm Password",
+                        isVisible: _isConfirmPasswordVisible,
+                        onToggleVisibility: () {
+                          setState(() {
+                            _isConfirmPasswordVisible =
+                                !_isConfirmPasswordVisible;
+                          });
+                        },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please confirm your password";
@@ -142,6 +161,8 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(height: 20),
+
+                      // Register Button
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -155,7 +176,13 @@ class _SignupViewState extends State<SignupView> {
                           backgroundColor: const Color(0xFF00CED1),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          textStyle: const TextStyle(fontSize: 18),
+                          textStyle: TextStyle(
+                            fontSize: isDesktop
+                                ? 20
+                                : isTablet
+                                    ? 18
+                                    : 16,
+                          ),
                         ),
                         child: const Text("Register"),
                       ),
@@ -177,29 +204,7 @@ class _SignupViewState extends State<SignupView> {
                 ),
                 const SizedBox(height: 20),
 
-                // Social Media Buttons (Icons)
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     IconButton(
-                //       onPressed: () {},
-                //       icon: Image.asset("assets/icons/google_icon.png"),
-                //       iconSize: 40,
-                //     ),
-                //     IconButton(
-                //       onPressed: () {},
-                //       icon: Image.asset("assets/icons/facebook_icon.png"),
-                //       iconSize: 40,
-                //     ),
-                //     IconButton(
-                //       onPressed: () {},
-                //       icon: Image.asset("assets/icons/apple_icon.png"),
-                //       iconSize: 40,
-                //     ),
-                //   ],
-                // ),
-                // const SizedBox(height: 20),
-
+                // Already have an account?
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -223,6 +228,51 @@ class _SignupViewState extends State<SignupView> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[100],
+      ),
+      keyboardType: keyboardType,
+      validator: validator,
+    );
+  }
+
+  Widget _buildPasswordField({
+    required String label,
+    required bool isVisible,
+    required VoidCallback onToggleVisibility,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[100],
+        suffixIcon: IconButton(
+          icon: Icon(
+            isVisible ? Icons.visibility : Icons.visibility_off,
+          ),
+          onPressed: onToggleVisibility,
+        ),
+      ),
+      obscureText: !isVisible,
+      validator: validator,
     );
   }
 }
