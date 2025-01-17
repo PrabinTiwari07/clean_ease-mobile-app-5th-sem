@@ -33,6 +33,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(state.copyWith(isLoading: true));
     final result = await _registerUseCase.call(
       RegisterUserParams(
+        fullName: event.fullName,
+        phoneNo: event.phoneNo,
+        address: event.address,
         email: event.email,
         password: event.password,
         // isAdmin: false, // Update if admin option is required
@@ -62,7 +65,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         Navigator.pushReplacement(
           event.context,
           MaterialPageRoute(
-            builder: (context) => Login(),
+            builder: (context) => const Login(),
           ),
         );
       },
