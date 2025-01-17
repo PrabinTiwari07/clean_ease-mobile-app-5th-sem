@@ -11,11 +11,9 @@ import 'package:hive_flutter/adapters.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize dependencies (including Hive)
   await initDependencies();
-  await Hive.initFlutter(); // Initialize Hive with Flutter support
+  await Hive.initFlutter();
   Hive.registerAdapter(UserHiveModelAdapter());
-
   runApp(const MyApp());
 }
 
@@ -37,11 +35,12 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'clean_ease',
         theme: ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: const SplashScreen(), // Replace with your initial screen
+        home: const SplashScreen(),
       ),
     );
   }
