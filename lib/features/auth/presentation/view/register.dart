@@ -14,10 +14,14 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  String? _selectedGender;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class _RegisterState extends State<Register> {
             );
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => Login()),
+              MaterialPageRoute(builder: (context) => const Login()),
             );
           } else if (state.errorMessage.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -57,6 +61,78 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // Full Name Field
+                    TextFormField(
+                      controller: _fullNameController,
+                      decoration: const InputDecoration(
+                        labelText: "Full Name",
+                        labelStyle: TextStyle(color: Colors.teal),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.person, color: Colors.teal),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your full name';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _addressController,
+                      decoration: const InputDecoration(
+                        labelText: "Address",
+                        labelStyle: TextStyle(color: Colors.teal),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.person, color: Colors.teal),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your address';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    // Phone Number Field
+                    TextFormField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        labelText: "Phone Number",
+                        labelStyle: TextStyle(color: Colors.teal),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.phone, color: Colors.teal),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    // Gender Dropdown
+                    DropdownButtonFormField<String>(
+                      value: _selectedGender,
+                      decoration: const InputDecoration(
+                        labelText: "Gender",
+                        labelStyle: TextStyle(color: Colors.teal),
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.transgender, color: Colors.teal),
+                      ),
+                      items: ["Male", "Female", "Other"].map((gender) {
+                        return DropdownMenuItem(
+                          value: gender,
+                          child: Text(gender),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGender = value;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select your gender';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 15),
                     // Email Field
                     TextFormField(
                       controller: _emailController,
@@ -124,6 +200,9 @@ class _RegisterState extends State<Register> {
                           context.read<RegisterBloc>().add(
                                 RegisterStudentEvent(
                                   context: context,
+                                  fullName: _fullNameController.text,
+                                  phoneNo: _phoneController.text,
+                                  address: _addressController.text,
                                   email: _emailController.text,
                                   password: _passwordController.text,
                                   confirmPassword:
@@ -154,7 +233,7 @@ class _RegisterState extends State<Register> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Login(),
+                            builder: (context) => const Login(),
                           ),
                         );
                       },
