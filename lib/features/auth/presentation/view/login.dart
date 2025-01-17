@@ -4,12 +4,18 @@ import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Login extends StatelessWidget {
-  Login({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,16 @@ class Login extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    // Logo Section
+                    SizedBox(
+                      height: 100,
+                      child: Image.asset(
+                        'assets/images/cleanEase.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Login Title
                     const Text(
                       "Login",
                       style: TextStyle(
@@ -93,17 +109,36 @@ class Login extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 20),
-                    TextButton(
-                      onPressed: () {
-                        // Forgot password logic
-                      },
-                      child: const Text(
-                        "Forgot Password?",
-                        style: TextStyle(
-                          color: Colors.teal,
-                          fontSize: 16,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _rememberMe,
+                              onChanged: (value) {
+                                setState(() {
+                                  _rememberMe = value ?? false;
+                                });
+                              },
+                            ),
+                            const Text(
+                              "Remember Me",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
@@ -121,7 +156,7 @@ class Login extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal,
                         padding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 30),
+                            vertical: 15, horizontal: 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -130,7 +165,7 @@ class Login extends StatelessWidget {
                         "Login",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 20,
                         ),
                       ),
                     ),
@@ -144,12 +179,22 @@ class Login extends StatelessWidget {
                           ),
                         );
                       },
-                      child: const Text(
-                        "Create Account",
-                        style: TextStyle(
-                          color: Colors.teal,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                      child: RichText(
+                        text: const TextSpan(
+                          text: "Don't have an account? ",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "Signup",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
