@@ -1,6 +1,7 @@
-import 'package:clean_ease/view/home_page_view.dart';
-import 'package:clean_ease/view/signup_view.dart';
 import 'package:flutter/material.dart';
+
+import 'home_page_view.dart';
+import 'signup_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});

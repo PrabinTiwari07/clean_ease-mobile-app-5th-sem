@@ -1,9 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clean_ease/core/common/navigator.dart';
-import 'package:clean_ease/view/calendar_view.dart';
-import 'package:clean_ease/view/order_view.dart';
-import 'package:clean_ease/view/settings_view.dart';
 import 'package:flutter/material.dart';
+
+import 'calendar_view.dart';
+import 'order_view.dart';
+import 'settings_view.dart';
 
 class HomeScreenView extends StatefulWidget {
   const HomeScreenView({super.key});
