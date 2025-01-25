@@ -1,4 +1,4 @@
-import 'package:clean_ease/features/auth/presentation/view/onboarding.dart';
+import 'package:clean_ease/features/splash/presentation/view/onboarding.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -43,6 +43,16 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 50),
             const CircularProgressIndicator(
               color: Color.fromARGB(255, 17, 47, 74),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "CleanEase: Where your laundry meets simplicity, efficiency, and care.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
             ),
           ],
         ),
