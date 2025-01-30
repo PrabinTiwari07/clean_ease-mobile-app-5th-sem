@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:clean_ease/features/auth/domain/entity/auth_entity.dart';
 
 abstract interface class IAuthDataSource {
@@ -8,6 +6,4 @@ abstract interface class IAuthDataSource {
   Future<void> registerStudent(AuthEntity student);
 
   Future<AuthEntity> getCurrentUser();
-
-  Future<String> uploadProfilePicture(File file);
 }

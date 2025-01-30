@@ -63,7 +63,7 @@ class _LoginState extends State<Login> {
                     const Text(
                       "Login",
                       style: TextStyle(
-                        color: Colors.teal,
+                        color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
                       ),
@@ -75,7 +75,7 @@ class _LoginState extends State<Login> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: "Email",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.email, color: Colors.teal),
                       ),
@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: "Password",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.lock, color: Colors.teal),
                       ),

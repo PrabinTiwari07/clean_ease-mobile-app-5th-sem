@@ -1,6 +1,3 @@
-//yeta hamle box haru create garxam
-//with Hive table
-
 class HiveTableConstant {
   HiveTableConstant._();
 

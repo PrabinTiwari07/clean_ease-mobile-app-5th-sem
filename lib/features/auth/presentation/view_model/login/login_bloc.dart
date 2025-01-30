@@ -49,7 +49,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
     });
 
-    // Handle Navigation to Register Screen
     on<NavigateRegisterScreenEvent>((event, emit) {
       Navigator.push(
         event.context,

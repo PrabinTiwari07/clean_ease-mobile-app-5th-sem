@@ -15,20 +15,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<Map<String, String>> onboardingData = [
     {
       "title": "Clean Ease",
-      "description":
-          "Creating an interactive forum to share information, and engage in discussions.",
+      "description": "",
       "image": "assets/images/onboarding.png",
     },
     {
       "title": "Clean Ease",
-      "description":
-          "Providing step-by-step guidance and document tracking to simplify administrative procedures",
-      "image": "assets/images/cleanEase.png",
+      "description": "",
+      "image": "assets/images/iron.jpg",
     },
     {
       "title": "Clean Ease",
-      "description":
-          "Providing a map feature that helps users easily locate government offices",
+      "description": "",
       "image": "assets/images/best.png",
     },
   ];
@@ -38,7 +35,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Login(),
+          builder: (context) => const Login(),
         ));
   }
 

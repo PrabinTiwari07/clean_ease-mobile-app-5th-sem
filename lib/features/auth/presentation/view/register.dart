@@ -30,18 +30,11 @@ class _RegisterState extends State<Register> {
       body: BlocConsumer<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Registration Successful")),
-            );
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const Login()),
             );
-          } else if (state.errorMessage.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage)),
-            );
-          }
+          } else if (state.errorMessage.isNotEmpty) {}
         },
         builder: (context, state) {
           return Center(
@@ -55,7 +48,7 @@ class _RegisterState extends State<Register> {
                     const Text(
                       "Register",
                       style: TextStyle(
-                        color: Colors.teal,
+                        color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
                       ),
@@ -66,7 +59,7 @@ class _RegisterState extends State<Register> {
                       controller: _fullNameController,
                       decoration: const InputDecoration(
                         labelText: "Full Name",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.person, color: Colors.teal),
                       ),
@@ -77,11 +70,12 @@ class _RegisterState extends State<Register> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _addressController,
                       decoration: const InputDecoration(
                         labelText: "Address",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.person, color: Colors.teal),
                       ),
@@ -99,7 +93,7 @@ class _RegisterState extends State<Register> {
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
                         labelText: "Phone Number",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.phone, color: Colors.teal),
                       ),
@@ -110,7 +104,7 @@ class _RegisterState extends State<Register> {
                       value: _selectedGender,
                       decoration: const InputDecoration(
                         labelText: "Gender",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.transgender, color: Colors.teal),
                       ),
@@ -139,7 +133,7 @@ class _RegisterState extends State<Register> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: "Email",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.email, color: Colors.teal),
                       ),
@@ -159,7 +153,7 @@ class _RegisterState extends State<Register> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: "Password",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.lock, color: Colors.teal),
                       ),
@@ -179,7 +173,7 @@ class _RegisterState extends State<Register> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: "Confirm Password",
-                        labelStyle: TextStyle(color: Colors.teal),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(),
                         prefixIcon:
                             Icon(Icons.lock_outline, color: Colors.teal),
@@ -237,12 +231,22 @@ class _RegisterState extends State<Register> {
                           ),
                         );
                       },
-                      child: const Text(
-                        "Already have an account? Log in",
-                        style: TextStyle(
-                          color: Colors.teal,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                      child: RichText(
+                        text: const TextSpan(
+                          text: "Already have an account? ",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "Signin",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

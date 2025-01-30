@@ -1,20 +1,3 @@
-// import 'package:clean_ease/features/auth/data/model/auth_hive_model.dart';
-// import 'package:hive/hive.dart';
-
-// class AuthLocalDataSource {
-//   final Box<AuthHiveModel> authBox;
-
-//   AuthLocalDataSource({required this.authBox});
-
-//   Future<void> saveUser(AuthHiveModel user) async {
-//     await authBox.put(user.email, user);
-//   }
-
-//   AuthHiveModel? getUserByEmail(String email) {
-//     return authBox.get(email);
-//   }
-// }
-
 import 'dart:io';
 
 import 'package:clean_ease/features/auth/data/model/auth_hive_model.dart';
@@ -32,6 +15,9 @@ class AuthLocalDataSource implements IAuthDataSource {
   Future<AuthEntity> getCurrentUser() {
     return Future.value(const AuthEntity(
       id: "1",
+      fullName: "",
+      phoneNo: "",
+      address: "",
       email: "",
       password: "",
       // isAdmin: false,
@@ -58,6 +44,9 @@ class AuthLocalDataSource implements IAuthDataSource {
       // Convert AuthEntity to UserHiveModel
       final userHiveModel = UserHiveModel(
         id: user.id,
+        fullName: user.fullName,
+        phoneNo: user.phoneNo,
+        address: user.address,
         email: user.email,
         password: user.password,
         // isAdmin: user.isAdmin,
