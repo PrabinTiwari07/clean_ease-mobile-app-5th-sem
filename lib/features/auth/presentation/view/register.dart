@@ -60,11 +60,15 @@ class _RegisterState extends State<Register> {
       body: BlocConsumer<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.isSuccess) {
+            // print("Navigating to OTP Verification Page..."); // Debugging
             // Navigator.pushReplacement(
             //   context,
-            //   MaterialPageRoute(builder: (context) => const Login()),
+            //   MaterialPageRoute(
+            //       builder: (context) =>
+            //           OtpVerificationView(email: _emailController.text)),
             // );
           } else if (state.errorMessage.isNotEmpty) {
+            print("Error: ${state.errorMessage}"); // Debugging
             // Handle error message
           }
         },
@@ -132,7 +136,7 @@ class _RegisterState extends State<Register> {
                           radius: 50,
                           backgroundImage: _img != null
                               ? FileImage(_img!)
-                              : const AssetImage('assets/images/profile.png')
+                              : const AssetImage('assets/images/image2.jpg')
                                   as ImageProvider,
                         ),
                       ),
@@ -248,7 +252,8 @@ class _RegisterState extends State<Register> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          context.read<RegisterBloc>().state;
+                          print("Signup button pressed");
+                          // context.read<RegisterBloc>().state;
                           // final imageName = RegisterState.imageName;
                           context.read<RegisterBloc>().add(
                                 RegisterUserEvent(
