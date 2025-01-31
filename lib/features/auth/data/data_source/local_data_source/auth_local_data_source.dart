@@ -14,8 +14,8 @@ class AuthLocalDataSource implements IAuthDataSource {
   @override
   Future<AuthEntity> getCurrentUser() {
     return Future.value(const AuthEntity(
-      id: "1",
-      fullName: "",
+      userId: "1",
+      fullname: "",
       phoneNo: "",
       address: "",
       email: "",
@@ -25,7 +25,7 @@ class AuthLocalDataSource implements IAuthDataSource {
   }
 
   @override
-  Future<String> loginStudent(String email, String password) async {
+  Future<String> loginUser(String email, String password) async {
     try {
       final user = await _hiveService.login(email, password);
       if (user != null) {
@@ -39,12 +39,12 @@ class AuthLocalDataSource implements IAuthDataSource {
   }
 
   @override
-  Future<void> registerStudent(AuthEntity user) async {
+  Future<void> registerUser(AuthEntity user) async {
     try {
       // Convert AuthEntity to UserHiveModel
       final userHiveModel = UserHiveModel(
-        id: user.id,
-        fullName: user.fullName,
+        id: user.userId,
+        fullName: user.fullname,
         phoneNo: user.phoneNo,
         address: user.address,
         email: user.email,
@@ -62,6 +62,12 @@ class AuthLocalDataSource implements IAuthDataSource {
   @override
   Future<String> uploadProfilePicture(File file) {
     // TODO: implement uploadProfilePicture
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> verifyEmail(String email, String otp) {
+    // TODO: implement verifyEmail
     throw UnimplementedError();
   }
 

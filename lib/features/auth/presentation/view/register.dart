@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:clean_ease/features/auth/presentation/view/login.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_event.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -21,7 +25,33 @@ class _RegisterState extends State<Register> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  String? _selectedGender;
+
+  checkCameraPermission() async {
+    if (await Permission.camera.request().isRestricted ||
+        await Permission.camera.request().isDenied) {
+      await Permission.camera.request();
+    }
+  }
+
+  File? _img;
+  Future _browseImage(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker().pickImage(source: imageSource);
+      if (image != null) {
+        setState(() {
+          _img = File(image.path);
+          // Send image to server
+          // context.read<RegisterBloc>().add(
+          //       LoadImage(file: _img!),
+          //     );
+        });
+      } else {
+        return;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +60,13 @@ class _RegisterState extends State<Register> {
       body: BlocConsumer<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.isSuccess) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const Login()),
-            );
-          } else if (state.errorMessage.isNotEmpty) {}
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => const Login()),
+            // );
+          } else if (state.errorMessage.isNotEmpty) {
+            // Handle error message
+          }
         },
         builder: (context, state) {
           return Center(
@@ -51,6 +83,58 @@ class _RegisterState extends State<Register> {
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Profile Picture
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          backgroundColor: Colors.grey[300],
+                          context: context,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          builder: (context) => Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    checkCameraPermission();
+                                    _browseImage(ImageSource.camera);
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.camera),
+                                  label: const Text('Camera'),
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    _browseImage(ImageSource.gallery);
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.image),
+                                  label: const Text('Gallery'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      child: SizedBox(
+                        height: 200,
+                        width: 200,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: _img != null
+                              ? FileImage(_img!)
+                              : const AssetImage('assets/images/profile.png')
+                                  as ImageProvider,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -98,35 +182,8 @@ class _RegisterState extends State<Register> {
                         prefixIcon: Icon(Icons.phone, color: Colors.teal),
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    // Gender Dropdown
-                    DropdownButtonFormField<String>(
-                      value: _selectedGender,
-                      decoration: const InputDecoration(
-                        labelText: "Gender",
-                        labelStyle: TextStyle(color: Colors.black),
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.transgender, color: Colors.teal),
-                      ),
-                      items: ["Male", "Female", "Other"].map((gender) {
-                        return DropdownMenuItem(
-                          value: gender,
-                          child: Text(gender),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedGender = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select your gender';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 20),
+
                     // Email Field
                     TextFormField(
                       controller: _emailController,
@@ -191,16 +248,20 @@ class _RegisterState extends State<Register> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          context.read<RegisterBloc>().state;
+                          // final imageName = RegisterState.imageName;
                           context.read<RegisterBloc>().add(
-                                RegisterStudentEvent(
+                                RegisterUserEvent(
                                   context: context,
-                                  fullName: _fullNameController.text,
+                                  fullname: _fullNameController.text,
                                   phoneNo: _phoneController.text,
                                   address: _addressController.text,
                                   email: _emailController.text,
                                   password: _passwordController.text,
                                   confirmPassword:
                                       _confirmPasswordController.text,
+                                  file: _img!,
+                                  // image: imageName,
                                 ),
                               );
                         }

@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:clean_ease/core/common/snackbar/my_snackbar.dart';
 import 'package:clean_ease/features/auth/domain/use_case/register_usecase.dart';
+import 'package:clean_ease/features/auth/domain/use_case/verify_usecase.dart';
+import 'package:clean_ease/features/auth/presentation/view/verify_view.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_event.dart';
 import 'package:flutter/material.dart';
 
@@ -9,15 +11,20 @@ import 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final RegisterUseCase _registerUseCase;
+  final VerifyEmailUsecase _verifyEmailUsecase;
 
-  RegisterBloc({required RegisterUseCase registerUseCase})
-      : _registerUseCase = registerUseCase,
+  RegisterBloc({
+    required RegisterUseCase registerUseCase,
+    required VerifyEmailUsecase verifyEmailUsecase,
+  })  : _registerUseCase = registerUseCase,
+        _verifyEmailUsecase = verifyEmailUsecase,
         super(RegisterState.initial()) {
-    on<RegisterStudentEvent>(_onRegisterStudent);
+    on<RegisterUserEvent>(_onRegisterUser);
+    on<VerifyOtpEvent>(_onVerifyOtp);
   }
 
-  Future<void> _onRegisterStudent(
-    RegisterStudentEvent event,
+  Future<void> _onRegisterUser(
+    RegisterUserEvent event,
     Emitter<RegisterState> emit,
   ) async {
     if (event.password != event.confirmPassword) {
@@ -33,11 +40,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(state.copyWith(isLoading: true));
     final result = await _registerUseCase.call(
       RegisterUserParams(
-        fullName: event.fullName,
+        fullname: event.fullname,
         phoneNo: event.phoneNo,
         address: event.address,
         email: event.email,
         password: event.password,
+        image: event.file.path,
         // isAdmin: false, // Update if admin option is required
       ),
     );
@@ -65,8 +73,46 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         Navigator.pushReplacement(
           event.context,
           MaterialPageRoute(
-            builder: (context) => const Login(),
+            builder: (context) => OtpVerificationView(
+              email: event.email,
+            ),
           ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onVerifyOtp(
+    VerifyOtpEvent event,
+    Emitter<RegisterState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true));
+    final result = await _verifyEmailUsecase.call(
+      VerifyEmailParams(email: event.email, otp: event.otp),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(
+          isLoading: false,
+          isOtpVerified: false,
+          errorMessage: failure.message,
+        ));
+        ScaffoldMessenger.of(event.context).showSnackBar(
+          SnackBar(content: Text(failure.message)),
+        );
+      },
+      (success) {
+        emit(state.copyWith(
+          isLoading: false,
+          isOtpVerified: true,
+        ));
+        ScaffoldMessenger.of(event.context).showSnackBar(
+          const SnackBar(content: Text("OTP Verified! Registration Complete!")),
+        );
+        Navigator.pushReplacement(
+          event.context,
+          MaterialPageRoute(builder: (context) => const Login()),
         );
       },
     );
