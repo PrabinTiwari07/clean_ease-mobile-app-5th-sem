@@ -85,7 +85,7 @@ class AuthRemoteDataSource implements IAuthDataSource {
         data: formData,
       );
 
-      if (response.statusCode != 201) {
+      if (response.statusCode != 200) {
         throw Exception(response.statusMessage);
       }
     } on DioException catch (e) {
