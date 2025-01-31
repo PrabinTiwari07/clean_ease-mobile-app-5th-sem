@@ -27,6 +27,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     RegisterUserEvent event,
     Emitter<RegisterState> emit,
   ) async {
+    print("RegisterUserEvent triggered"); // Debugging
+
     if (event.password != event.confirmPassword) {
       emit(state.copyWith(errorMessage: "Passwords do not match"));
       showMySnackBar(
@@ -38,6 +40,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
 
     emit(state.copyWith(isLoading: true));
+
     final result = await _registerUseCase.call(
       RegisterUserParams(
         fullname: event.fullname,
@@ -46,12 +49,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         email: event.email,
         password: event.password,
         image: event.file.path,
-        // isAdmin: false, // Update if admin option is required
       ),
     );
 
+    print("API Call Result: $result"); // Debugging
+
     result.fold(
       (failure) {
+        print("Registration failed: ${failure.message}"); // Debugging
         emit(state.copyWith(
           isLoading: false,
           isSuccess: false,
@@ -64,18 +69,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         );
       },
       (success) {
+        print("Registration successful!"); // Debugging
         emit(state.copyWith(isLoading: false, isSuccess: true));
         showMySnackBar(
           context: event.context,
           message: "Registration successful!",
           color: Colors.green,
         );
+
         Navigator.pushReplacement(
           event.context,
           MaterialPageRoute(
-            builder: (context) => OtpVerificationView(
-              email: event.email,
-            ),
+            builder: (context) => OtpVerificationView(email: event.email),
           ),
         );
       },
