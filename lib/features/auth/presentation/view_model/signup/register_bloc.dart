@@ -27,7 +27,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     RegisterUserEvent event,
     Emitter<RegisterState> emit,
   ) async {
-    print("RegisterUserEvent triggered"); // Debugging
+    print("RegisterUserEvent triggered");
 
     if (event.password != event.confirmPassword) {
       emit(state.copyWith(errorMessage: "Passwords do not match"));
@@ -52,11 +52,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       ),
     );
 
-    print("API Call Result: $result"); // Debugging
+    print("API Call Result: $result");
 
     result.fold(
       (failure) {
-        print("Registration failed: ${failure.message}"); // Debugging
+        print("Registration failed: ${failure.message}");
         emit(state.copyWith(
           isLoading: false,
           isSuccess: false,

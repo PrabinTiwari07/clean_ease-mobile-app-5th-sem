@@ -60,7 +60,7 @@ class _RegisterState extends State<Register> {
       body: BlocConsumer<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.isSuccess) {
-            // print("Navigating to OTP Verification Page..."); // Debugging
+            // print("Navigating to OTP Verification Page...");
             // Navigator.pushReplacement(
             //   context,
             //   MaterialPageRoute(
@@ -68,7 +68,7 @@ class _RegisterState extends State<Register> {
             //           OtpVerificationView(email: _emailController.text)),
             // );
           } else if (state.errorMessage.isNotEmpty) {
-            print("Error: ${state.errorMessage}"); // Debugging
+            print("Error: ${state.errorMessage}");
             // Handle error message
           }
         },
