@@ -157,7 +157,7 @@ Future<void> _initLoginDependencies() async {
   getIt.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(
       getIt<AuthRemoteRepository>(),
-      // getIt<TokenSharedPrefs>(), // Fixed: Injected TokenSharedPrefs
+      getIt<TokenSharedPrefs>(),
     ),
   );
 
