@@ -21,7 +21,7 @@ void main() {
   });
 
   group('LoginUseCase Tests', () {
-    test('should call the [AuthRepo.login] with correct email and password',
+    test('Need to call the [AuthRepo.login] with correct email and password',
         () async {
       when(() => repository.loginUser(any(), any()))
           .thenAnswer((invocation) async {
@@ -56,7 +56,7 @@ void main() {
       verify(() => tokenSharedPrefs.getToken()).called(1);
     });
 
-    test('should return Failure when login fails', () async {
+    test('Need to return Failure when login fails', () async {
       when(() => repository.loginUser(any(), any())).thenAnswer((_) async =>
           const Left(ApiFailure(message: 'Invalid username or password')));
 
@@ -71,7 +71,7 @@ void main() {
       verifyNoMoreInteractions(tokenSharedPrefs);
     });
 
-    test('should save token after successful login', () async {
+    test('Need to save token after successful login', () async {
       when(() => repository.loginUser(any(), any()))
           .thenAnswer((_) async => const Right('token'));
 
@@ -90,20 +90,20 @@ void main() {
       verify(() => tokenSharedPrefs.getToken()).called(1);
     });
 
-    test('should return Failure when email is empty', () async {
+    test('Need to return Failure when email is empty', () async {
       when(() => repository.loginUser(any(), any())).thenAnswer(
-          (_) async => const Left(ApiFailure(message: 'email not provoded')));
+          (_) async => const Left(ApiFailure(message: 'email is not entered')));
 
       final result =
-          await useCase(const LoginParams(email: '', password: 'priyanka'));
+          await useCase(const LoginParams(email: '', password: 'prabin'));
 
-      expect(result, const Left(ApiFailure(message: 'email not provoded')));
+      expect(result, const Left(ApiFailure(message: 'email is not enteres')));
 
       verify(() => repository.loginUser(any(), any())).called(1);
       verifyNever(() => tokenSharedPrefs.saveToken(any()));
     });
 
-    test('should return Failure when password is empty', () async {
+    test('Need to return Failure when password is empty', () async {
       // When the password is empty, we expect the repository to return a failure
       when(() => repository.loginUser(any(), any())).thenAnswer((_) async =>
           const Left(ApiFailure(message: 'Invalid email or password')));
@@ -119,9 +119,9 @@ void main() {
       verifyNever(() => tokenSharedPrefs.saveToken(any()));
     });
 
-    tearDown(() {
-      reset(repository);
-      reset(tokenSharedPrefs);
-    });
+    // tearDown(() {
+    //   reset(repository);
+    //   reset(tokenSharedPrefs);
+    // });
   });
 }
