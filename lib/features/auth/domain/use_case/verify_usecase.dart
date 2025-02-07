@@ -7,7 +7,15 @@ class VerifyEmailParams {
   final String email;
   final String otp;
 
-  VerifyEmailParams({required this.email, required this.otp});
+  const VerifyEmailParams({required this.email, required this.otp});
+
+  // Empty constructor
+  const VerifyEmailParams.empty()
+      : email = '_empty.email',
+        otp = '_empty.otp';
+
+  @override
+  List<Object?> get props => [email, otp];
 }
 
 class VerifyEmailUsecase implements UsecaseWithParams<void, VerifyEmailParams> {
