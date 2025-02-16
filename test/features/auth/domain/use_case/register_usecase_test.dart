@@ -12,7 +12,7 @@ void main() {
   late RegisterUseCase registerUseCase;
 
   setUpAll(() {
-    registerFallbackValue(const AuthEntity.empty()); // ✅ Register fallback once
+    registerFallbackValue(const AuthEntity.empty());
   });
 
   setUp(() {
@@ -30,23 +30,18 @@ void main() {
   );
 
   group('RegisterUseCase Tests', () {
-    test('Returns Failure when email is already in use', () async {
-      // Arrange
+    test('Need to return failure when email is already in use', () async {
       when(() => repository.registerUser(any())).thenAnswer((_) async =>
           const Left(ApiFailure(message: "Email already registered")));
 
-      // Act
       final result = await registerUseCase(registerUserParams);
 
-      // Assert
       expect(
           result, const Left(ApiFailure(message: "Email already registered")));
-      verify(() => repository.registerUser(any()))
-          .called(1); // ✅ Fix: Use any()
+      verify(() => repository.registerUser(any())).called(1);
     });
 
-    test('Returns Failure when email is invalid', () async {
-      // Arrange
+    test('Need to return failure when email is invalid', () async {
       const invalidParams = RegisterUserParams(
         fullname: "Prabin Tiwari",
         phoneNo: "9828696552",
@@ -58,17 +53,13 @@ void main() {
       when(() => repository.registerUser(any())).thenAnswer(
           (_) async => const Left(ApiFailure(message: "Invalid email format")));
 
-      // Act
       final result = await registerUseCase(invalidParams);
 
-      // Assert
       expect(result, const Left(ApiFailure(message: "Invalid email format")));
-      verify(() => repository.registerUser(any()))
-          .called(1); // ✅ Fix: Use any()
+      verify(() => repository.registerUser(any())).called(1);
     });
 
-    test('Returns Failure when password is too weak', () async {
-      // Arrange
+    test('Need to return failure when password is too weak', () async {
       const invalidParams = RegisterUserParams(
         fullname: "Prabin Tiwari",
         phoneNo: "9828696552",
@@ -80,17 +71,13 @@ void main() {
       when(() => repository.registerUser(any())).thenAnswer(
           (_) async => const Left(ApiFailure(message: "Password too weak")));
 
-      // Act
       final result = await registerUseCase(invalidParams);
 
-      // Assert
       expect(result, const Left(ApiFailure(message: "Password too weak")));
-      verify(() => repository.registerUser(any()))
-          .called(1); // ✅ Fix: Use any()
+      verify(() => repository.registerUser(any())).called(1);
     });
 
-    test('Returns Failure when phone number is invalid', () async {
-      // Arrange
+    test('Need to return failure when phone number is invalid', () async {
       const invalidParams = RegisterUserParams(
         fullname: "Prabin Tiwari",
         phoneNo: "12346549",
@@ -102,41 +89,30 @@ void main() {
       when(() => repository.registerUser(any())).thenAnswer(
           (_) async => const Left(ApiFailure(message: "Invalid phone number")));
 
-      // Act
       final result = await registerUseCase(invalidParams);
 
-      // Assert
       expect(result, const Left(ApiFailure(message: "Invalid phone number")));
-      verify(() => repository.registerUser(any()))
-          .called(1); // ✅ Fix: Use any()
+      verify(() => repository.registerUser(any())).called(1);
     });
 
-    test('Returns Failure when there is a server error', () async {
-      // Arrange
+    test('Need to return Failure when there is a server error', () async {
       when(() => repository.registerUser(any())).thenAnswer((_) async =>
           const Left(ApiFailure(message: "Internal Server Error")));
 
-      // Act
       final result = await registerUseCase(registerUserParams);
 
-      // Assert
       expect(result, const Left(ApiFailure(message: "Internal Server Error")));
-      verify(() => repository.registerUser(any()))
-          .called(1); // ✅ Fix: Use any()
+      verify(() => repository.registerUser(any())).called(1);
     });
 
     test('Successfully registers the user', () async {
-      // Arrange
       when(() => repository.registerUser(any()))
           .thenAnswer((_) async => const Right(null));
 
-      // Act
       final result = await registerUseCase(registerUserParams);
 
-      // Assert
       expect(result, const Right(null));
-      verify(() => repository.registerUser(any()))
-          .called(1); // ✅ Fix: Use any()
+      verify(() => repository.registerUser(any())).called(1);
     });
   });
 }

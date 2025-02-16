@@ -97,31 +97,24 @@ void main() {
       final result =
           await useCase(const LoginParams(email: '', password: 'prabin'));
 
-      expect(result, const Left(ApiFailure(message: 'email is not enteres')));
+      expect(result, const Left(ApiFailure(message: 'email is not entered')));
 
       verify(() => repository.loginUser(any(), any())).called(1);
       verifyNever(() => tokenSharedPrefs.saveToken(any()));
     });
 
     test('Need to return Failure when password is empty', () async {
-      // When the password is empty, we expect the repository to return a failure
       when(() => repository.loginUser(any(), any())).thenAnswer((_) async =>
           const Left(ApiFailure(message: 'Invalid email or password')));
 
       final result = await useCase(
           const LoginParams(email: 'test@test.com', password: ''));
 
-      // We expect a Failure result
       expect(
           result, const Left(ApiFailure(message: 'Invalid email or password')));
 
       verify(() => repository.loginUser(any(), any())).called(1);
       verifyNever(() => tokenSharedPrefs.saveToken(any()));
     });
-
-    // tearDown(() {
-    //   reset(repository);
-    //   reset(tokenSharedPrefs);
-    // });
   });
 }

@@ -19,7 +19,7 @@ void main() {
     registerFallbackValue(File('cleanEase.png'));
   });
 
-  final testFile = File('test.jpg');
+  final testFile = File('cleanEase.png');
   const testUrl = "images/cleanEase.png";
 
   test('Need to upload image and return URL on success', () async {
