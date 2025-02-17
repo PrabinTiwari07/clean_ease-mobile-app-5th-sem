@@ -71,6 +71,13 @@ import 'package:clean_ease/features/auth/domain/use_case/verify_usecase.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:clean_ease/features/home/presentation/view_model/home_cubit.dart';
+import 'package:clean_ease/features/service/data/data_source/local_data_source/service_local_data_source.dart';
+import 'package:clean_ease/features/service/data/data_source/remote_data_source/service_remote_data_source.dart';
+import 'package:clean_ease/features/service/data/repository/service_local_repository.dart';
+import 'package:clean_ease/features/service/data/repository/service_remote_repository.dart';
+import 'package:clean_ease/features/service/domain/use_case/get_service_by_id_usecase.dart';
+import 'package:clean_ease/features/service/domain/use_case/service_use_case.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_block.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -84,6 +91,7 @@ Future<void> initDependencies() async {
   await _initLoginDependencies();
   await _initSignupDependencies();
   _initHomeDependencies();
+  _initServiceDependencies();
 }
 
 Future<void> _initSharedPreferences() async {
@@ -104,6 +112,47 @@ void _initHiveService() {
 void _initHomeDependencies() {
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(),
+  );
+}
+
+void _initServiceDependencies() {
+  // Service Data Sources
+  getIt.registerLazySingleton<ServiceLocalDataSource>(
+    () => ServiceLocalDataSource(hiveService: getIt<HiveService>()),
+  );
+
+  getIt.registerLazySingleton<ServiceRemoteDataSource>(
+    () => ServiceRemoteDataSource(dio: getIt<Dio>()),
+  );
+
+  // Service Repositories
+  getIt.registerLazySingleton<ServiceLocalRepository>(
+    () => ServiceLocalRepository(
+        serviceLocalDataSource: getIt<ServiceLocalDataSource>()),
+  );
+
+  getIt.registerLazySingleton<ServiceRemoteRepository>(
+    () => ServiceRemoteRepository(
+        serviceRemoteDataSource: getIt<ServiceRemoteDataSource>()),
+  );
+
+  // Service Use Cases
+  getIt.registerLazySingleton<GetServicesUseCase>(
+    () =>
+        GetServicesUseCase(serviceRepository: getIt<ServiceRemoteRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetServiceByIdUseCase>(
+    () => GetServiceByIdUseCase(
+        serviceRepository: getIt<ServiceRemoteRepository>()),
+  );
+
+  // Service Bloc
+  getIt.registerFactory<ServiceBloc>(
+    () => ServiceBloc(
+      getServicesUseCase: getIt<GetServicesUseCase>(),
+      getServiceByIdUseCase: getIt<GetServiceByIdUseCase>(),
+    ),
   );
 }
 
