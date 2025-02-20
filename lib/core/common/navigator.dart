@@ -89,7 +89,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       case 2:
         return 'Order';
       case 3:
-        return 'Settings';
+        return 'Profile';
       default:
         return 'Home';
     }

@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/order.dart';
-import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/settings.dart';
+import 'package:clean_ease/features/profile/presentation/view/profile_view.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -36,7 +36,7 @@ class _HomeScreenViewState extends State<Home> {
       case 3:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Settings()),
+          MaterialPageRoute(builder: (context) => const ProfileView()),
         );
         break;
     }

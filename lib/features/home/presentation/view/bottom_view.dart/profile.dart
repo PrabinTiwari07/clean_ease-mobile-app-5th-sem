@@ -4,8 +4,8 @@
 // import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/order.dart';
 // import 'package:flutter/material.dart';
 
-// class Settings extends StatelessWidget {
-//   const Settings({super.key});
+// class Profile extends StatelessWidget {
+//   const Profile({super.key});
 
 //   @override
 //   Widget build(BuildContext context) {

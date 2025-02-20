@@ -1,7 +1,7 @@
 import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/order.dart';
-import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/settings.dart';
+import 'package:clean_ease/features/profile/presentation/view/profile_view.dart';
 import 'package:flutter/material.dart';
 
 class Calendar extends StatelessWidget {
@@ -48,7 +48,7 @@ class Calendar extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Settings(),
+                  builder: (context) => const ProfileView(),
                 ),
               );
               break;

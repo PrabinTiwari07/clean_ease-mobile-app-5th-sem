@@ -1,7 +1,7 @@
 import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
-import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/settings.dart';
+import 'package:clean_ease/features/profile/presentation/view/profile_view.dart';
 import 'package:flutter/material.dart';
 
 class Order extends StatelessWidget {
@@ -46,7 +46,7 @@ class Order extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Settings(),
+                  builder: (context) => const ProfileView(),
                 ),
               );
               break;

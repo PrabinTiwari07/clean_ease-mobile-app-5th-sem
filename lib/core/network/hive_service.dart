@@ -1,6 +1,10 @@
+import 'package:clean_ease/app/constants/hive_table_constants.dart';
 import 'package:clean_ease/features/auth/data/model/auth_hive_model.dart';
+import 'package:clean_ease/features/service/data/model/service_hive_model.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+
+// import '../../features/services/data/model/Service_hive_model.dart';
 
 class HiveService {
   static Future<void> init() async {
@@ -11,6 +15,7 @@ class HiveService {
     Hive.init(path);
 
     Hive.registerAdapter(UserHiveModelAdapter());
+    Hive.registerAdapter(ServiceHiveModelAdapter());
   }
 
   Future<void> addUser(UserHiveModel user) async {
@@ -52,5 +57,35 @@ class HiveService {
   // Close Hive Database
   Future<void> close() async {
     await Hive.close();
+  }
+
+  // Service Queries
+
+// Add or Register a Service
+  Future<void> addService(ServiceHiveModel service) async {
+    var box =
+        await Hive.openBox<ServiceHiveModel>(HiveTableConstant.serviceBox);
+    await box.put(service.serviceId, service);
+  }
+
+// Delete a Service by ID
+  Future<void> deleteService(String serviceId) async {
+    var box =
+        await Hive.openBox<ServiceHiveModel>(HiveTableConstant.serviceBox);
+    await box.delete(serviceId);
+  }
+
+// Get All Services
+  Future<List<ServiceHiveModel>> getAllServices() async {
+    var box =
+        await Hive.openBox<ServiceHiveModel>(HiveTableConstant.serviceBox);
+    return box.values.toList();
+  }
+
+// Get Service by ID
+  Future<ServiceHiveModel?> getServiceById(String serviceId) async {
+    var box =
+        await Hive.openBox<ServiceHiveModel>(HiveTableConstant.serviceBox);
+    return box.get(serviceId);
   }
 }
