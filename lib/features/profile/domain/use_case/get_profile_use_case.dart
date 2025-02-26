@@ -1,6 +1,5 @@
-import 'package:clean_ease/features/profile/data/repository/profile_repository.dart';
-
-import '../entity/profile_entity.dart';
+import 'package:clean_ease/features/profile/domain/entity/profile_entity.dart';
+import 'package:clean_ease/features/profile/domain/repository/profile_repository.dart';
 
 class GetProfileUseCase {
   final ProfileRepository repository;
@@ -8,6 +7,7 @@ class GetProfileUseCase {
   GetProfileUseCase(this.repository);
 
   Future<ProfileEntity> call() async {
-    return await repository.getProfile();
+    return await repository
+        .getUserProfile(); // ✅ Now correctly returns ProfileEntity
   }
 }
