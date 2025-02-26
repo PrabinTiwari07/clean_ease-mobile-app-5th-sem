@@ -1,25 +1,17 @@
 class ProfileEntity {
   final String id;
-  final String name;
-  final String address;
+  final String fullname;
+  final String email;
   final String phone;
   final String image;
+  final String address;
 
   ProfileEntity({
     required this.id,
-    required this.name,
-    required this.address,
+    required this.fullname,
+    required this.email,
     required this.phone,
     required this.image,
+    required this.address,
   });
-  // Add this method to fix the error
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'address': address,
-      'phone': phone,
-      'image': image,
-    };
-  }
 }
