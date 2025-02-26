@@ -10,7 +10,11 @@ class ServiceRemoteDataSource {
 
   Future<List<ServiceEntity>> getServices() async {
     try {
+      print("Fetching services from: ${ApiEndpoints.getAllServices}");
       final response = await dio.get(ApiEndpoints.getAllServices);
+
+      print("Response received: ${response.data}");
+
       if (response.statusCode == 200) {
         final List data = response.data;
         return data
@@ -20,6 +24,7 @@ class ServiceRemoteDataSource {
         throw Exception('Failed to fetch Services');
       }
     } catch (e) {
+      print("Error fetching services: $e");
       throw Exception('Error: ${e.toString()}');
     }
   }

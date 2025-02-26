@@ -54,11 +54,11 @@ import 'package:clean_ease/app/di/di.dart';
 import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
-import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/service_view.dart';
 import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_event.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_state.dart';
+import 'package:clean_ease/features/service/presentation/view/service_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -269,7 +269,8 @@ class ProfileView extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const Order()), // If Order exists
+                    builder: (context) =>
+                        const ServiceListScreen()), // If Order exists
               );
               break;
             case 3: // ✅ This ensures Profile is correctly highlighted

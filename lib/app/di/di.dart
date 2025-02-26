@@ -306,9 +306,7 @@ import 'package:clean_ease/features/profile/data/repository/profile_repository.d
 import 'package:clean_ease/features/profile/domain/repository/profile_repository.dart';
 import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
-import 'package:clean_ease/features/service/data/data_source/local_data_source/service_local_data_source.dart';
 import 'package:clean_ease/features/service/data/data_source/remote_data_source/service_remote_data_source.dart';
-import 'package:clean_ease/features/service/data/repository/service_local_repository.dart';
 import 'package:clean_ease/features/service/data/repository/service_remote_repository.dart';
 import 'package:clean_ease/features/service/domain/use_case/get_service_by_id_usecase.dart';
 import 'package:clean_ease/features/service/domain/use_case/service_use_case.dart';
@@ -357,26 +355,19 @@ void _initHomeDependencies() {
   );
 }
 
-/// ✅ Register Service Dependencies
 void _initServiceDependencies() {
-  getIt.registerLazySingleton<ServiceLocalDataSource>(
-    () => ServiceLocalDataSource(hiveService: getIt<HiveService>()),
-  );
-
+  // ✅ Register ServiceRemoteDataSource
   getIt.registerLazySingleton<ServiceRemoteDataSource>(
     () => ServiceRemoteDataSource(dio: getIt<Dio>()),
   );
 
-  getIt.registerLazySingleton<ServiceLocalRepository>(
-    () => ServiceLocalRepository(
-        serviceLocalDataSource: getIt<ServiceLocalDataSource>()),
-  );
-
+  // ✅ Register Service Repository
   getIt.registerLazySingleton<ServiceRemoteRepository>(
     () => ServiceRemoteRepository(
         serviceRemoteDataSource: getIt<ServiceRemoteDataSource>()),
   );
 
+  // ✅ Register Use Cases
   getIt.registerLazySingleton<GetServicesUseCase>(
     () =>
         GetServicesUseCase(serviceRepository: getIt<ServiceRemoteRepository>()),
@@ -387,15 +378,15 @@ void _initServiceDependencies() {
         serviceRepository: getIt<ServiceRemoteRepository>()),
   );
 
+  // ✅ Register ServiceBloc
   getIt.registerFactory<ServiceBloc>(
     () => ServiceBloc(
       getServicesUseCase: getIt<GetServicesUseCase>(),
-      getServiceByIdUseCase: getIt<GetServiceByIdUseCase>(),
+      // getServiceByIdUseCase: getIt<GetServiceByIdUseCase>(),
     ),
   );
 }
 
-/// ✅ Register Profile Dependencies
 /// ✅ Register Profile Dependencies
 Future<void> _initProfileDependencies() async {
   // ✅ Register Profile Remote Data Source

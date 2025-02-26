@@ -51,9 +51,11 @@ import 'package:clean_ease/features/auth/data/model/auth_hive_model.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:clean_ease/features/home/presentation/view_model/home_cubit.dart';
-import 'package:clean_ease/features/profile/data/model/profile_hive_model.dart';
+import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_event.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_block.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_event.dart';
 import 'package:clean_ease/features/splash/presentation/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,7 +70,7 @@ void main() async {
 
   Hive.registerAdapter(UserHiveModelAdapter());
   // ✅ Register Hive Adapter
-  Hive.registerAdapter(ProfileHiveModelAdapter());
+  // Hive.registerAdapter(ProfileHiveModelAdapter());
 
   // ✅ Open Hive Box Before DI Setup
   // await Hive.openBox<ProfileHiveModel>('profile_box');
@@ -100,8 +102,13 @@ class MyApp extends StatelessWidget {
           create: (_) => getIt<HomeCubit>(),
         ),
         BlocProvider<ProfileBloc>(
-          create: (_) => getIt<ProfileBloc>()
-            ..add(LoadProfile()), // Loads profile on startup
+          create: (_) => ProfileBloc(
+            getProfileUseCase: getIt<GetProfileUseCase>(),
+          )..add(LoadProfile()), // ✅ Ensure this is included
+        ),
+        BlocProvider<ServiceBloc>(
+          create: (_) => getIt<ServiceBloc>()
+            ..add(GetServicesEvent()), // ✅ Initialize once
         ),
       ],
       child: MaterialApp(
