@@ -1,77 +1,34 @@
 import 'package:clean_ease/features/profile/domain/entity/profile_entity.dart';
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-part 'profile_api_model.g.dart';
-
-@JsonSerializable()
-class ProfileApiModel extends Equatable {
-  final String id;
-  final String name;
-  final String address;
-  final String phone;
-  final String image;
-
-  const ProfileApiModel({
-    required this.id,
-    required this.name,
-    required this.address,
-    required this.phone,
-    required this.image,
+class ProfileApiModel extends ProfileEntity {
+  ProfileApiModel({
+    required super.id,
+    required super.fullname,
+    required super.email,
+    required super.phone,
+    required super.image,
+    required super.address,
   });
 
-  const ProfileApiModel.empty()
-      : id = '',
-        name = '',
-        address = '',
-        phone = '',
-        image = '';
-
-  // From JSON
-  factory ProfileApiModel.fromJson(Map<String, dynamic> json) =>
-      _$ProfileApiModelFromJson(json);
-
-  // To JSON
-  Map<String, dynamic> toJson() => _$ProfileApiModelToJson(this);
-
-  // factory ProfileApiModel.fromJson(Map<String, dynamic> json) {
-  //   return ProfileApiModel(
-  //     id: json['id'],
-  //     name: json['name'],
-  //     address: json['address'],
-  //     phone: json['phone'],
-  //     image: json['image'],
-  //   );
-  // }
-
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'id': id,
-  //     'name': name,
-  //     'address': address,
-  //     'phone': phone,
-  //     'image': image,
-  //   };
-  // }
-// }
-
-// Convert ServiceApiModel to ServiceEntity
-  ProfileEntity toEntity() {
-    return ProfileEntity(
-      id: id,
-      name: name,
-      address: address,
-      phone: phone,
-      image: image,
+  factory ProfileApiModel.fromJson(Map<String, dynamic> json) {
+    return ProfileApiModel(
+      id: json["_id"] ?? "",
+      fullname: json["fullname"] ?? "", // ✅ Match API response key
+      email: json["email"] ?? "",
+      phone: json["phone"] ?? "",
+      image: json["image"] ?? "",
+      address: json["address"] ?? "",
     );
   }
 
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        address,
-        phone,
-        image,
-      ];
+  Map<String, dynamic> toJson() {
+    return {
+      "_id": id,
+      "fullname": fullname, // ✅ Match API key
+      "email": email,
+      "phone": phone,
+      "image": image,
+      "address": address,
+    };
+  }
 }
