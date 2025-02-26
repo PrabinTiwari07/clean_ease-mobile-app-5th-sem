@@ -1,21 +1,21 @@
-import 'package:hive/hive.dart';
+// import 'package:hive/hive.dart';
 
-import '../../model/profile_hive_model.dart';
+// import '../../model/profile_hive_model.dart';
 
-class ProfileLocalDataSource {
-  final Box<ProfileHiveModel> profileBox;
+// class ProfileLocalDataSource {
+//   final Box<ProfileHiveModel> profileBox;
 
-  ProfileLocalDataSource({required this.profileBox});
+//   ProfileLocalDataSource({required this.profileBox});
 
-  ProfileHiveModel? getProfile() {
-    return profileBox.get('profile');
-  }
+//   ProfileHiveModel? getProfile() {
+//     return profileBox.get('profile');
+//   }
 
-  Future<void> saveProfile(ProfileHiveModel profile) async {
-    await profileBox.put('profile', profile);
-  }
+//   Future<void> saveProfile(ProfileHiveModel profile) async {
+//     await profileBox.put('profile', profile);
+//   }
 
-  Future<void> clearProfile() async {
-    await profileBox.delete('profile');
-  }
-}
+//   Future<void> clearProfile() async {
+//     await profileBox.delete('profile');
+//   }
+// }
