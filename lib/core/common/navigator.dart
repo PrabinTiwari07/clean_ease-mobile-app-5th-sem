@@ -76,7 +76,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       case 2:
         return Icons.shopping_bag;
       case 3:
-        return Icons.settings;
+        return Icons.person;
       default:
         return Icons.home;
     }
@@ -89,7 +89,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       case 2:
         return 'Order';
       case 3:
-        return 'Settings';
+        return 'Profile';
       default:
         return 'Home';
     }

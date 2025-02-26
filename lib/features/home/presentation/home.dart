@@ -1,9 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
-import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/order.dart';
-import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/settings.dart';
+import 'package:clean_ease/features/profile/presentation/view/profile_view.dart';
+import 'package:clean_ease/features/service/domain/entity/service_entity.dart';
+import 'package:clean_ease/features/service/presentation/view/service_list_screen.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_block.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_event.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,6 +19,13 @@ class Home extends StatefulWidget {
 
 class _HomeScreenViewState extends State<Home> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // ✅ Fetch services when homepage is initialized
+    context.read<ServiceBloc>().add(GetServicesEvent());
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -30,13 +42,13 @@ class _HomeScreenViewState extends State<Home> {
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Order()),
+          MaterialPageRoute(builder: (context) => const ServiceListScreen()),
         );
         break;
       case 3:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Settings()),
+          MaterialPageRoute(builder: (context) => const ProfileView()),
         );
         break;
     }
@@ -44,8 +56,6 @@ class _HomeScreenViewState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
@@ -55,9 +65,8 @@ class _HomeScreenViewState extends State<Home> {
               radius: 20,
               backgroundImage: AssetImage('assets/images/image1.jpg'),
             ),
-            const SizedBox(width: 8), // Provide sufficient space
+            const SizedBox(width: 8),
             Expanded(
-              // Wrap content in Expanded to prevent overflow
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -69,7 +78,7 @@ class _HomeScreenViewState extends State<Home> {
                         .titleLarge
                         ?.copyWith(color: Colors.white),
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis, // Avoid text overflow
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     'Dillibazar, Kathmandu',
@@ -122,7 +131,7 @@ class _HomeScreenViewState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // First Section: Our Services
+            // ✅ "Our Services" section with fetched services
             Container(
               padding: EdgeInsets.all(screenWidth * 0.04),
               decoration: _boxDecoration(),
@@ -134,43 +143,20 @@ class _HomeScreenViewState extends State<Home> {
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                   const SizedBox(height: 10),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      int crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
-
-                      return GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 16.0,
-                        mainAxisSpacing: 16.0,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          _buildServiceCard(
-                              context,
-                              'Automated Laundry',
-                              'assets/images/washingmachine.png',
-                              Colors.orange,
-                              const Text('Automated Laundry Page')),
-                          _buildServiceCard(
-                              context,
-                              'Dry Cleaning',
-                              'assets/images/folded clothes.png',
-                              Colors.orange,
-                              const Text('Dry Cleaning Page')),
-                          _buildServiceCard(
-                              context,
-                              'Only Press',
-                              'assets/images/iron.jpg',
-                              Colors.orange,
-                              const Text('Only Press Page')),
-                          _buildServiceCard(
-                              context,
-                              'Shoe Cleaning',
-                              'assets/images/shoe.jpg',
-                              Colors.orange,
-                              const Text('Shoe Cleaning Page')),
-                        ],
-                      );
+                  BlocBuilder<ServiceBloc, ServiceState>(
+                    builder: (context, state) {
+                      if (state is ServiceLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is ServiceError) {
+                        return Center(child: Text("Error: ${state.message}"));
+                      } else if (state is ServicesLoaded) {
+                        if (state.services.isEmpty) {
+                          return const Center(
+                              child: Text("No services available"));
+                        }
+                        return _buildServiceGrid(state.services);
+                      }
+                      return const Center(child: Text('Fetching services...'));
                     },
                   ),
                 ],
@@ -179,7 +165,7 @@ class _HomeScreenViewState extends State<Home> {
 
             const SizedBox(height: 20),
 
-            // Second Section: Price List
+            // ✅ Second Section: Price List
             Container(
               padding: EdgeInsets.symmetric(
                 vertical: screenWidth * 0.03,
@@ -332,42 +318,49 @@ class _HomeScreenViewState extends State<Home> {
     return endDate.difference(now).inDays;
   }
 
-  Widget _buildServiceCard(BuildContext context, String title, String assetPath,
-      Color color, Widget targetPage) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => targetPage));
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 4,
-              offset: Offset(2, 2),
+  /// ✅ Creates a service card with compact design for vertical scrolling
+  Widget _buildServiceCard(BuildContext context, ServiceEntity service) {
+    final String imageUrl = service.image.isNotEmpty
+        ? 'http://10.0.2.2:3000${service.image}'
+        : 'https://via.placeholder.com/150';
+
+    return Container(
+      decoration: _boxDecoration(),
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              imageUrl,
+              height: 80, // ✅ Smaller image height
+              width: 80, // ✅ Smaller image width
+              fit: BoxFit.cover,
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Image.asset(
-                assetPath,
-                fit: BoxFit.contain,
-              ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  service.title,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  service.description,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -385,4 +378,87 @@ class _HomeScreenViewState extends State<Home> {
       ],
     );
   }
+}
+
+/// ✅ Dynamically builds service grid from fetched services
+Widget _buildServiceGrid(List<ServiceEntity> services) {
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      int crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
+
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+        ),
+        itemCount: services.length,
+        itemBuilder: (context, index) {
+          final service = services[index];
+          return _buildServiceCard(context, service);
+        },
+      );
+    },
+  );
+}
+
+/// ✅ Builds an individual service card with navigation
+Widget _buildServiceCard(BuildContext context, ServiceEntity service) {
+  final String imageUrl = service.image.isNotEmpty
+      ? 'http://10.0.2.2:3000${service.image}'
+      : 'https://via.placeholder.com/150';
+
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ServiceListScreen()),
+      );
+    },
+    child: Container(
+      decoration: _boxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              service.title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildPromotionalBanner() {
+  return const Text("🚀 Promotional Offers Go Here!");
+}
+
+BoxDecoration _boxDecoration() {
+  return BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: const [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 4,
+        offset: Offset(2, 2),
+      ),
+    ],
+  );
 }
