@@ -1,66 +1,17 @@
-// import 'package:clean_ease/app/di/di.dart';
-// import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
-// import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
-// import 'package:clean_ease/features/profile/presentation/view_model/profile_event.dart';
-// import 'package:clean_ease/features/profile/presentation/view_model/profile_state.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-
-// class ProfileView extends StatelessWidget {
-//   const ProfileView({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Profile')),
-//       body: BlocProvider(
-//         create: (context) => ProfileBloc(
-//           getProfileUseCase: getIt<GetProfileUseCase>(), // ✅ Use DI
-//         )..add(LoadProfile()), // Fetch user details on load
-//         child: BlocBuilder<ProfileBloc, ProfileState>(
-//           builder: (context, state) {
-//             if (state is ProfileLoading) {
-//               return const Center(child: CircularProgressIndicator());
-//             } else if (state is ProfileLoaded) {
-//               return Column(
-//                 children: [
-//                   CircleAvatar(
-//                     radius: 50,
-//                     backgroundImage: state.profile.image.isNotEmpty
-//                         ? NetworkImage(
-//                             state.profile.image) // ✅ Fetch from network
-//                         : const AssetImage('assets/images/default_avatar.png')
-//                             as ImageProvider, // ✅ Default image
-//                   ),
-//                   Text("First Name: ${state.profile.fullname}"),
-//                   Text("Address: ${state.profile.address}"),
-//                   Text("Phone: ${state.profile.phone}"),
-//                   Text("Email: ${state.profile.email}"),
-//                 ],
-//               );
-//             } else if (state is ProfileError) {
-//               return Center(child: Text(state.message));
-//             } else {
-//               return const Center(child: Text('Failed to load user details'));
-//             }
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:clean_ease/app/di/di.dart';
 import 'package:clean_ease/core/common/navigator.dart';
+import 'package:clean_ease/features/auth/presentation/view/login.dart';
 import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
 import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
+import 'package:clean_ease/features/profile/presentation/view/edit_profile_view.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_event.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_state.dart';
 import 'package:clean_ease/features/service/presentation/view/service_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart'; // ✅ Import FlutterToast
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -68,7 +19,23 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200], // Light background
+      appBar: AppBar(
+        title: const Text("Profile"),
+        backgroundColor: Colors.teal,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const Home()), // ✅ Redirect to Home
+              (route) => false,
+            );
+          },
+        ),
+      ),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: BlocProvider(
           create: (context) => ProfileBloc(
@@ -81,161 +48,102 @@ class ProfileView extends StatelessWidget {
               } else if (state is ProfileLoaded) {
                 return Column(
                   children: [
-                    const SizedBox(height: 20),
-
-                    // Back Button & Title
+                    // ✅ Profile Header
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back),
-                            onPressed: () => Navigator.pop(context), // Go Back
+                          CircleAvatar(
+                            radius: 55,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: state.profile.image.isNotEmpty
+                                  ? NetworkImage(state.profile.image)
+                                  : const AssetImage(
+                                          'assets/images/default_avatar.png')
+                                      as ImageProvider,
+                            ),
                           ),
-                          const SizedBox(width: 10),
-                          const Text(
-                            "Edit Profile",
-                            style: TextStyle(
-                              fontSize: 22,
+                          const SizedBox(height: 10),
+                          Text(
+                            state.profile.fullname,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          const SizedBox(height: 5),
+                          Text(
+                            state.profile.phone,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            state.profile.email,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
 
-                    // Profile Picture with Edit Button
-                    Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: state.profile.image.isNotEmpty
-                              ? NetworkImage(state.profile.image)
-                              : const AssetImage(
-                                      'assets/images/default_avatar.png')
-                                  as ImageProvider,
-                        ),
-                        Positioned(
-                          bottom: 5,
-                          right: 5,
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Form Fields
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
+                    // ✅ Profile Options
+                    Expanded(
+                      child: ListView(
                         children: [
-                          // First Name & Last Name
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "First Name",
-                                  initialValue:
-                                      state.profile.fullname.split(" ")[0],
+                          ProfileOption(
+                            icon: Icons.edit,
+                            text: "Edit Profile",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const EditProfileView(),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "Last Name",
-                                  initialValue:
-                                      state.profile.fullname.split(" ").length >
-                                              1
-                                          ? state.profile.fullname.split(" ")[1]
-                                          : "",
-                                ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
-
-                          // Phone Number
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: 60,
-                                child: CustomTextField(
-                                  label: "Code",
-                                  initialValue: "+977",
-                                  enabled: false,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "Phone no",
-                                  initialValue: state.profile.phone,
-                                ),
-                              ),
-                            ],
+                          ProfileOption(
+                            icon: Icons.dark_mode,
+                            text: "Dark Mode",
+                            trailing: Switch(
+                              value: false,
+                              onChanged: (bool value) {
+                                // TODO: Implement Dark Mode
+                              },
+                            ),
                           ),
-
-                          // Address
-                          CustomTextField(
-                            label: "Address",
-                            initialValue: state.profile.address,
+                          ProfileOption(
+                            icon: Icons.settings,
+                            text: "Settings",
+                            onTap: () {
+                              // TODO: Navigate to Settings Page
+                            },
                           ),
-
-                          // Password Fields
-                          const CustomTextField(
-                            label: "Password",
-                            isPassword: true,
+                          ProfileOption(
+                            icon: Icons.description,
+                            text: "Terms & Conditions",
+                            onTap: () {
+                              // TODO: Navigate to Terms & Conditions Page
+                            },
                           ),
-                          const CustomTextField(
-                            label: "Confirm Password",
-                            isPassword: true,
+                          ProfileOption(
+                            icon: Icons.logout,
+                            text: "Logout",
+                            onTap: () {
+                              _showLogoutDialog(context);
+                            },
                           ),
                         ],
                       ),
                     ),
-
-                    const SizedBox(height: 20),
-
-                    // Save & Cancel Buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.cyan,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 50, vertical: 12),
-                          ),
-                          child: const Text("Save"),
-                        ),
-                        const SizedBox(width: 20),
-                        OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.orange),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 12),
-                          ),
-                          child: const Text(
-                            "Cancel",
-                            style: TextStyle(color: Colors.orange),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
                   ],
                 );
               } else if (state is ProfileError) {
@@ -247,71 +155,122 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ),
-
-      // ✅ Bottom Navigation Bar (Remains Functional)
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 3, // ✅ Ensure this matches the Profile tab's index
+        currentIndex: 3, // ✅ Keeps Profile highlighted
         onTap: (int index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const Home()),
-              );
-              break;
-            case 1:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const Calendar()),
-              );
-              break;
-            case 2:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        const ServiceListScreen()), // If Order exists
-              );
-              break;
-            case 3: // ✅ This ensures Profile is correctly highlighted
-              break;
+          if (index != 3) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) {
+                if (index == 0) return const Home();
+                if (index == 1) return const Calendar();
+                if (index == 2) return const ServiceListScreen();
+                return const ProfileView();
+              }),
+              (route) => false,
+            );
           }
         },
       ),
     );
   }
+
+  /// ✅ **Logout Confirmation Dialog with Working Toast**
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Logout"),
+          content: const Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                _performLogout(context);
+              },
+              child: const Text("Yes, Logout"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// ✅ **Logout Action (Fix: Delayed Navigation for Toast)**
+  void _performLogout(BuildContext context) {
+    // ✅ Cancel any existing toast messages to prevent overlap
+    Fluttertoast.cancel();
+
+    // ✅ Show Toast Message
+    Fluttertoast.showToast(
+      msg: "Logged out successfully",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.black87,
+      textColor: Colors.white,
+    );
+
+    // ✅ Delay before navigating to Login screen (ensures toast shows)
+    Future.delayed(const Duration(milliseconds: 800), () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+        (route) => false,
+      );
+    });
+  }
 }
 
-// Custom Text Field Widget
-class CustomTextField extends StatelessWidget {
-  final String label;
-  final String? initialValue;
-  final bool isPassword;
-  final bool enabled;
+// ✅ Profile Option Widget (Refactored for UI Enhancement)
+class ProfileOption extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Widget? trailing;
+  final VoidCallback? onTap;
 
-  const CustomTextField({
+  const ProfileOption({
     super.key,
-    required this.label,
-    this.initialValue,
-    this.isPassword = false,
-    this.enabled = true,
+    required this.icon,
+    required this.text,
+    this.trailing,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextFormField(
-        initialValue: initialValue,
-        obscureText: isPassword,
-        enabled: enabled,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          suffixIcon: isPassword
-              ? const Icon(Icons.visibility_off, color: Colors.grey)
-              : null,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.teal),
+        title: Text(
+          text,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
+        trailing: trailing ??
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey,
+            ),
+        onTap: onTap,
       ),
     );
   }
