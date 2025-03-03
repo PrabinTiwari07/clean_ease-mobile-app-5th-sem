@@ -301,6 +301,10 @@ import 'package:clean_ease/features/auth/domain/use_case/verify_usecase.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:clean_ease/features/home/presentation/view_model/home_cubit.dart';
+import 'package:clean_ease/features/price/data/data_source/price_remote_data_source.dart';
+import 'package:clean_ease/features/price/data/repository/price_repository.dart';
+import 'package:clean_ease/features/price/domain/use_case/get_price_use_case.dart';
+import 'package:clean_ease/features/price/presentation/view_model/price_bloc.dart';
 import 'package:clean_ease/features/profile/data/data_source/remote_data_source/profile_remote_data_source.dart';
 import 'package:clean_ease/features/profile/data/repository/profile_repository.dart';
 import 'package:clean_ease/features/profile/domain/repository/profile_repository.dart';
@@ -326,7 +330,8 @@ Future<void> initDependencies() async {
   await _initSignupDependencies();
   _initHomeDependencies();
   _initServiceDependencies();
-  await _initProfileDependencies(); // ✅ Ensure it's awaited
+  await _initProfileDependencies();
+  initPriceDependencies();
 }
 
 /// ✅ Ensure Hive is initialized before dependency injection
@@ -387,9 +392,9 @@ void _initServiceDependencies() {
   );
 }
 
-/// ✅ Register Profile Dependencies
+// Register Profile Dependencies
 Future<void> _initProfileDependencies() async {
-  // ✅ Register Profile Remote Data Source
+  // Register Profile Remote Data Source
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
     () => ProfileRemoteDataSource(
       dio: getIt<Dio>(),
@@ -397,24 +402,24 @@ Future<void> _initProfileDependencies() async {
     ),
   );
 
-// ✅ Register Profile Repository
+// Register Profile Repository
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(
         remoteDataSource: getIt<ProfileRemoteDataSource>()),
   );
 
-// ✅ Register GetProfileUseCase
+// Register GetProfileUseCase
   getIt.registerLazySingleton<GetProfileUseCase>(
     () => GetProfileUseCase(getIt<ProfileRepository>()),
   );
 
-// ✅ Register ProfileBloc
+// Register ProfileBloc
   getIt.registerFactory<ProfileBloc>(
     () => ProfileBloc(getProfileUseCase: getIt<GetProfileUseCase>()),
   );
 }
 
-/// ✅ Register Signup Dependencies
+// Register Signup Dependencies
 Future<void> _initSignupDependencies() async {
   getIt.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSource(getIt<HiveService>()),
@@ -452,7 +457,7 @@ Future<void> _initSignupDependencies() async {
   );
 }
 
-/// ✅ Register Login Dependencies
+// Register Login Dependencies
 Future<void> _initLoginDependencies() async {
   getIt.registerLazySingleton<TokenSharedPrefs>(
     () => TokenSharedPrefs(getIt<SharedPreferences>()),
@@ -470,5 +475,23 @@ Future<void> _initLoginDependencies() async {
       homeCubit: getIt<HomeCubit>(),
       loginUseCase: getIt<LoginUseCase>(),
     ),
+  );
+}
+
+void initPriceDependencies() {
+  getIt.registerLazySingleton<PriceRemoteDataSource>(
+    () => PriceRemoteDataSource(dio: getIt<Dio>()),
+  );
+
+  getIt.registerLazySingleton<PriceRepository>(
+    () => PriceRepository(remoteDataSource: getIt<PriceRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<GetPricesUseCase>(
+    () => GetPricesUseCase(priceRepository: getIt<PriceRepository>()),
+  );
+
+  getIt.registerFactory<PriceBloc>(
+    () => PriceBloc(serviceBloc: getIt<ServiceBloc>()), // ✅ Use ServiceBloc
   );
 }
