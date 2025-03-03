@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
+import 'package:clean_ease/features/price/presentation/view/price_list_screen.dart';
 import 'package:clean_ease/features/profile/presentation/view/profile_view.dart';
 import 'package:clean_ease/features/service/domain/entity/service_entity.dart';
 import 'package:clean_ease/features/service/presentation/view/service_list_screen.dart';
@@ -180,7 +181,13 @@ class _HomeScreenViewState extends State<Home> {
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PriceListScreen()),
+                      );
+                    },
                     icon: const Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.black54,
