@@ -51,6 +51,7 @@ import 'package:clean_ease/features/auth/data/model/auth_hive_model.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:clean_ease/features/home/presentation/view_model/home_cubit.dart';
+import 'package:clean_ease/features/price/presentation/view_model/price_bloc.dart';
 import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_event.dart';
@@ -104,11 +105,14 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProfileBloc>(
           create: (_) => ProfileBloc(
             getProfileUseCase: getIt<GetProfileUseCase>(),
-          )..add(LoadProfile()), // ✅ Ensure this is included
+          )..add(LoadProfile()),
         ),
         BlocProvider<ServiceBloc>(
-          create: (_) => getIt<ServiceBloc>()
-            ..add(GetServicesEvent()), // ✅ Initialize once
+          create: (_) => getIt<ServiceBloc>()..add(GetServicesEvent()),
+        ),
+        BlocProvider<PriceBloc>(
+          create: (context) =>
+              PriceBloc(serviceBloc: context.read<ServiceBloc>()),
         ),
       ],
       child: MaterialApp(
