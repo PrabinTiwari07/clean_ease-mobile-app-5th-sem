@@ -32,15 +32,15 @@ class ApiEndpoints {
   // static const String logout = "/user/logout";
 
   // ====================== Booking Routes ======================
-  // static const String bookService = "bookings/book";
-  // static const String getAllBookings = "bookings/all";
-  // static const String getUserBookings = "bookings/getbooking";
-  // static const String confirmBooking = "bookings/confirm";
+  static const String bookService = "books";
+  static const String getAllBookings = "bookings/all";
+  static const String getUserBookings = "bookings/getbooking";
+  static const String confirmBooking = "bookings/confirm";
 
   // ====================== Service Routes ======================
-  static const String getAllServices = "services/";
-  static const String getServiceById = "services/";
-  static const String createService = "services/";
+  static const String getAllServices = "services";
+  static const String getServiceById = "services";
+  static const String createService = "services";
   static const String updateServiceAvailability = "services/";
   static const String deleteService = "services/";
 }
