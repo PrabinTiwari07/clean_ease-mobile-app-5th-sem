@@ -1,11 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clean_ease/core/common/navigator.dart';
+import 'package:clean_ease/features/booking/presentation/view/booking_history_view.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
 import 'package:clean_ease/features/price/presentation/view/price_list_screen.dart';
 import 'package:clean_ease/features/profile/presentation/view/profile_view.dart';
 import 'package:clean_ease/features/service/domain/entity/service_entity.dart';
 import 'package:clean_ease/features/service/presentation/view/service_list_screen.dart';
-import 'package:clean_ease/features/service/presentation/view_model/service_block.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_bloc.dart';
 import 'package:clean_ease/features/service/presentation/view_model/service_event.dart';
 import 'package:clean_ease/features/service/presentation/view_model/service_state.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,12 @@ class _HomeScreenViewState extends State<Home> {
           MaterialPageRoute(builder: (context) => const ProfileView()),
         );
         break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const BookingHistoryView()),
+        );
+        break;
     }
   }
 
@@ -82,7 +89,7 @@ class _HomeScreenViewState extends State<Home> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    'Dillibazar, Kathmandu',
+                    'Jorpati',
                     style: Theme.of(context)
                         .textTheme
                         .titleSmall
