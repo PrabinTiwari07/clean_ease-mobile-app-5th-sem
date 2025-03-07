@@ -1,16 +1,3 @@
-# clean_ease
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+“CleanEase” is designed to simplify and enhance laundry services in Nepal by digitalizing traditional processes and addressing inefficiencies. Most conventional laundries struggle with ineffective order management, lack of real-time tracking, and inconvenient payment systems. These challenges make it difficult for both customers and service providers to manage and monitor laundry services efficiently
+![appendix1](https://github.com/user-attachments/assets/a84752f2-55af-4eca-9c9e-908041f8490e)
+![appendix2](https://github.com/user-attachments/assets/e9b8044e-1097-4b12-a93e-ce342708be28)
