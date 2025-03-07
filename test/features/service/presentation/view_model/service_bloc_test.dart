@@ -12,13 +12,11 @@ import 'package:mockito/mockito.dart';
 
 import 'service_bloc_test.mocks.dart';
 
-/// ✅ Generate mocks for `GetServicesUseCase`
 @GenerateMocks([GetServicesUseCase])
 void main() {
   late ServiceBloc serviceBloc;
   late MockGetServicesUseCase mockGetServicesUseCase;
 
-  /// ✅ Fake service list
   final List<ServiceEntity> fakeServices = [
     ServiceEntity(
       serviceId: '1',
@@ -42,7 +40,6 @@ void main() {
     ),
   ];
 
-  /// ✅ Failure case
   const failure = ServerFailure(message: 'Failed to fetch services');
 
   setUp(() {
@@ -54,39 +51,37 @@ void main() {
     serviceBloc.close();
   });
 
-  /// ✅ **Test 1: Initial state should be `ServiceInitial`**
-  test('Initial state should be ServiceInitial', () {
-    expect(serviceBloc.state, ServiceInitial());
+  group('ServiceBloc', () {
+    test('Initial state should be ServiceInitial', () {
+      expect(serviceBloc.state, ServiceInitial());
+    });
+
+    blocTest<ServiceBloc, ServiceState>(
+      'emits [ServiceLoading, ServicesLoaded] when GetServicesEvent succeeds',
+      build: () {
+        when(mockGetServicesUseCase())
+            .thenAnswer((_) async => Right(fakeServices));
+        return serviceBloc;
+      },
+      act: (bloc) => bloc.add(GetServicesEvent()),
+      expect: () => [
+        ServiceLoading(),
+        ServicesLoaded(services: fakeServices),
+      ],
+    );
+
+    blocTest<ServiceBloc, ServiceState>(
+      'emits [ServiceLoading, ServiceError] when GetServicesEvent fails',
+      build: () {
+        when(mockGetServicesUseCase())
+            .thenAnswer((_) async => const Left(failure));
+        return serviceBloc;
+      },
+      act: (bloc) => bloc.add(GetServicesEvent()),
+      expect: () => [
+        ServiceLoading(),
+        ServiceError(message: failure.toString()),
+      ],
+    );
   });
-
-  /// ✅ **Test 2: Successful Fetch Services**
-  blocTest<ServiceBloc, ServiceState>(
-    'emits [ServiceLoading, ServicesLoaded] when GetServicesEvent succeeds',
-    build: () {
-      when(mockGetServicesUseCase())
-          .thenAnswer((_) async => Right(fakeServices));
-      return serviceBloc;
-    },
-    act: (bloc) => bloc.add(GetServicesEvent()),
-    expect: () => [
-      ServiceLoading(),
-      ServicesLoaded(services: fakeServices),
-    ],
-  );
-
-  /// ✅ **Test 3: Fetch Services Failure**
-  blocTest<ServiceBloc, ServiceState>(
-    'emits [ServiceLoading, ServiceError] when GetServicesEvent fails',
-    build: () {
-      when(mockGetServicesUseCase())
-          .thenAnswer((_) async => const Left(failure));
-      return serviceBloc;
-    },
-    act: (bloc) => bloc.add(GetServicesEvent()),
-    expect: () => [
-      ServiceLoading(),
-      ServiceError(
-          message: failure.toString()), // ✅ EXPECTS THE FULL FAILURE OBJECT
-    ],
-  );
 }

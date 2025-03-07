@@ -3,6 +3,7 @@ import 'package:clean_ease/features/auth/presentation/view_model/login/login_blo
 import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -24,20 +25,32 @@ class _LoginState extends State<Login> {
       body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state.isLoading) {
-            // Optionally show a loading indicator
           } else if (state.isSuccess) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Home(),
-              ),
+            Fluttertoast.showToast(
+              msg: "Login successful",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
             );
+
+            // ✅ Redirect to Home after toast message
+            Future.delayed(const Duration(seconds: 1), () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(),
+                ),
+              );
+            });
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Invalid Credentials'),
-                backgroundColor: Colors.red,
-              ),
+            // ✅ Show error toast for invalid credentials
+            Fluttertoast.showToast(
+              msg: "Invalid email or password!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
             );
           }
         },

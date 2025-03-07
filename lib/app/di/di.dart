@@ -14,7 +14,7 @@ import 'package:clean_ease/features/auth/presentation/view_model/signup/register
 import 'package:clean_ease/features/booking/data/repository/booking_repository.dart';
 import 'package:clean_ease/features/booking/domain/repository/booking_repository.dart';
 import 'package:clean_ease/features/booking/domain/use_case/booking_use_case.dart';
-import 'package:clean_ease/features/booking/presentation/view_model/booking_block.dart';
+import 'package:clean_ease/features/booking/presentation/view_model/booking_bloc.dart';
 import 'package:clean_ease/features/home/presentation/view_model/home_cubit.dart';
 import 'package:clean_ease/features/price/data/data_source/price_remote_data_source.dart';
 import 'package:clean_ease/features/price/data/repository/price_repository.dart';
@@ -24,12 +24,12 @@ import 'package:clean_ease/features/profile/data/data_source/remote_data_source/
 import 'package:clean_ease/features/profile/data/repository/profile_repository.dart';
 import 'package:clean_ease/features/profile/domain/repository/profile_repository.dart';
 import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
-import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
+import 'package:clean_ease/features/profile/presentation/view_model/profile_bloc.dart';
 import 'package:clean_ease/features/service/data/data_source/remote_data_source/service_remote_data_source.dart';
 import 'package:clean_ease/features/service/data/repository/service_remote_repository.dart';
 import 'package:clean_ease/features/service/domain/use_case/get_service_by_id_usecase.dart';
 import 'package:clean_ease/features/service/domain/use_case/service_use_case.dart';
-import 'package:clean_ease/features/service/presentation/view_model/service_block.dart';
+import 'package:clean_ease/features/service/presentation/view_model/service_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -47,29 +47,28 @@ Future<void> initDependencies() async {
   _initServiceDependencies();
   await _initProfileDependencies();
   initPriceDependencies();
-  await _initBookingDependencies(); // ✅ Register Booking Dependencies
+  await _initBookingDependencies();
 }
 
-/// ✅ Ensure Hive is initialized before dependency injection
 Future<void> _initHiveService() async {
   await Hive.initFlutter();
   getIt.registerLazySingleton<HiveService>(() => HiveService());
 }
 
-/// ✅ Register Shared Preferences
+///  Register Shared Preferences
 Future<void> _initSharedPreferences() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 }
 
-/// ✅ Register API Service (Dio)
+///  Register API Service (Dio)
 void _initApiService() {
   getIt.registerLazySingleton<Dio>(
     () => ApiService(Dio()).dio,
   );
 }
 
-/// ✅ Register HomeCubit
+///  Register HomeCubit
 void _initHomeDependencies() {
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(),
@@ -77,18 +76,18 @@ void _initHomeDependencies() {
 }
 
 void _initServiceDependencies() {
-  // ✅ Register ServiceRemoteDataSource
+  //  Register ServiceRemoteDataSource
   getIt.registerLazySingleton<ServiceRemoteDataSource>(
     () => ServiceRemoteDataSource(dio: getIt<Dio>()),
   );
 
-  // ✅ Register Service Repository
+  //  Register Service Repository
   getIt.registerLazySingleton<ServiceRemoteRepository>(
     () => ServiceRemoteRepository(
         serviceRemoteDataSource: getIt<ServiceRemoteDataSource>()),
   );
 
-  // ✅ Register Use Cases
+  //  Register Use Cases
   getIt.registerLazySingleton<GetServicesUseCase>(
     () =>
         GetServicesUseCase(serviceRepository: getIt<ServiceRemoteRepository>()),
@@ -99,7 +98,7 @@ void _initServiceDependencies() {
         serviceRepository: getIt<ServiceRemoteRepository>()),
   );
 
-  // ✅ Register ServiceBloc
+  //  Register ServiceBloc
   getIt.registerFactory<ServiceBloc>(
     () => ServiceBloc(
       getServicesUseCase: getIt<GetServicesUseCase>(),
@@ -208,34 +207,35 @@ void initPriceDependencies() {
   );
 
   getIt.registerFactory<PriceBloc>(
-    () => PriceBloc(serviceBloc: getIt<ServiceBloc>()), // ✅ Use ServiceBloc
+    () => PriceBloc(serviceBloc: getIt<ServiceBloc>()), //  Use ServiceBloc
   );
 }
 
 Future<void> _initBookingDependencies() async {
-  // ✅ Ensure Dio is only registered once in `_initApiService()`, so do NOT register it here
-
-  // ✅ Register TokenSharedPrefs
+  //  Register TokenSharedPrefs
   // getIt.registerLazySingleton<TokenSharedPrefs>(
   //   () => TokenSharedPrefs(getIt<SharedPreferences>()),
   // );
 
-  // ✅ Register Booking Repository
+  //  Register Booking Repository
   getIt.registerLazySingleton<BookingRepository>(
     () => BookingRepositoryImpl(
-      dio: getIt<Dio>(), // ✅ Use already registered Dio instance
+      dio: getIt<Dio>(),
       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
     ),
   );
 
-  // ✅ Register Booking Use Case
+  //  Register Booking Use Case
   getIt.registerLazySingleton<BookingUseCase>(
     () => BookingUseCase(
       bookingRepository: getIt<BookingRepository>(),
     ),
   );
+  //  Register BookingHistoryBloc
+// getIt.registerFactory<BookingBloc>(
+//   () => BookingHistoryBloc(bookingRepository: getIt<BookingRepository>()),
+// );
 
-  // ✅ Check if BookingBloc is already registered before registering
   if (!getIt.isRegistered<BookingBloc>()) {
     getIt.registerFactory<BookingBloc>(
       () => BookingBloc(

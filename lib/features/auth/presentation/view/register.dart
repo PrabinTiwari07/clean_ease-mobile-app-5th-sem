@@ -136,7 +136,7 @@ class _RegisterState extends State<Register> {
                           radius: 50,
                           backgroundImage: _img != null
                               ? FileImage(_img!)
-                              : const AssetImage('assets/images/image2.jpg')
+                              : const AssetImage('assets/images/profile.jpg')
                                   as ImageProvider,
                         ),
                       ),

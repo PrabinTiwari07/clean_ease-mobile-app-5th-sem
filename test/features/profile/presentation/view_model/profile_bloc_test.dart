@@ -16,12 +16,13 @@ void main() {
   late MockGetProfileUseCase mockGetProfileUseCase;
 
   final fakeProfile = ProfileEntity(
-      id: '123',
-      fullname: 'Kisame Hoshigake',
-      email: 'kisame@gmail.com',
-      phone: '1234567890',
-      image: 'https://example.com/samehada.jpg',
-      address: 'Mist');
+    id: '123',
+    fullname: 'Kisame Hoshigake',
+    email: 'kisame@gmail.com',
+    phone: '1234567890',
+    image: 'https://example.com/samehada.jpg',
+    address: 'Mist',
+  );
 
   const failureMessage = "Failed to load user data";
 
@@ -34,55 +35,53 @@ void main() {
     profileBloc.close();
   });
 
-  // Test 1: Initial state should be `ProfileInitial`**
-  test('Initial state should be ProfileInitial', () {
-    expect(profileBloc.state, ProfileInitial());
+  group('ProfileBloc', () {
+    test('Initial state should be ProfileInitial', () {
+      expect(profileBloc.state, ProfileInitial());
+    });
+
+    blocTest<ProfileBloc, ProfileState>(
+      'emits [ProfileLoading, ProfileLoaded] when LoadProfile succeeds',
+      build: () {
+        when(mockGetProfileUseCase()).thenAnswer((_) async => fakeProfile);
+        return profileBloc;
+      },
+      act: (bloc) => bloc.add(LoadProfile()),
+      expect: () => [
+        ProfileLoading(),
+        ProfileLoaded(profile: fakeProfile),
+      ],
+    );
+
+    blocTest<ProfileBloc, ProfileState>(
+      'emits [ProfileLoading, ProfileError] when LoadProfile fails',
+      build: () {
+        when(mockGetProfileUseCase()).thenThrow(Exception(failureMessage));
+        return profileBloc;
+      },
+      act: (bloc) => bloc.add(LoadProfile()),
+      expect: () => [
+        ProfileLoading(),
+        ProfileError("Failed to load user: Exception: $failureMessage"),
+      ],
+    );
+
+    blocTest<ProfileBloc, ProfileState>(
+      'handles multiple LoadProfile events correctly',
+      build: () {
+        when(mockGetProfileUseCase()).thenAnswer((_) async => fakeProfile);
+        return profileBloc;
+      },
+      act: (bloc) async {
+        bloc.add(LoadProfile());
+        bloc.add(LoadProfile());
+      },
+      expect: () => [
+        ProfileLoading(),
+        ProfileLoaded(profile: fakeProfile),
+        ProfileLoading(),
+        ProfileLoaded(profile: fakeProfile),
+      ],
+    );
   });
-
-  // Test 2: Successful Profile Loading**
-  blocTest<ProfileBloc, ProfileState>(
-    'emits [ProfileLoading, ProfileLoaded] when LoadProfile succeeds',
-    build: () {
-      when(mockGetProfileUseCase()).thenAnswer((_) async => fakeProfile);
-      return profileBloc;
-    },
-    act: (bloc) => bloc.add(LoadProfile()),
-    expect: () => [
-      ProfileLoading(),
-      ProfileLoaded(profile: fakeProfile),
-    ],
-  );
-
-  // Test 3: Profile Loading Failure**
-  blocTest<ProfileBloc, ProfileState>(
-    'emits [ProfileLoading, ProfileError] when LoadProfile fails',
-    build: () {
-      when(mockGetProfileUseCase()).thenThrow(Exception(failureMessage));
-      return profileBloc;
-    },
-    act: (bloc) => bloc.add(LoadProfile()),
-    expect: () => [
-      ProfileLoading(),
-      ProfileError("Failed to load user: Exception: $failureMessage"),
-    ],
-  );
-
-  // Test 4: Handling Multiple LoadProfile Requests**
-  blocTest<ProfileBloc, ProfileState>(
-    'handles multiple LoadProfile events correctly',
-    build: () {
-      when(mockGetProfileUseCase()).thenAnswer((_) async => fakeProfile);
-      return profileBloc;
-    },
-    act: (bloc) async {
-      bloc.add(LoadProfile());
-      bloc.add(LoadProfile());
-    },
-    expect: () => [
-      ProfileLoading(),
-      ProfileLoaded(profile: fakeProfile),
-      ProfileLoading(),
-      ProfileLoaded(profile: fakeProfile),
-    ],
-  );
 }

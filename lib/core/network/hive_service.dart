@@ -2,11 +2,8 @@ import 'package:clean_ease/features/auth/data/model/auth_hive_model.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
-// import '../../features/services/data/model/Service_hive_model.dart';
-
 class HiveService {
   static Future<void> init() async {
-    // Initialize the database
     var directory = await getApplicationDocumentsDirectory();
     var path = '${directory.path}/clean_ease.db';
 
@@ -38,7 +35,7 @@ class HiveService {
         (user) => user.email == email && user.password == password,
       );
     } catch (e) {
-      return null; // Return null if no user is found
+      return null;
     }
   }
 

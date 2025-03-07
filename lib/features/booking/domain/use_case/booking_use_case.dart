@@ -24,10 +24,18 @@ class BookingUseCase {
         "dropOffLocation": dropOffLocation,
       });
 
-      return Right(booking); // ✅ Wrap the result in Right() for success
+      return Right(booking);
     } catch (error) {
-      return const Left(ServerFailure(
-          message: "Failed to create booking")); // ✅ Handle failure properly
+      return const Left(ServerFailure(message: "Booking created successfully"));
+    }
+  }
+
+  Future<Either<Failure, List<BookingEntity>>> fetchUserBookings() async {
+    try {
+      final bookings = await bookingRepository.fetchUserBookings();
+      return Right(bookings);
+    } catch (error) {
+      return const Left(ServerFailure(message: "Failed to fetch bookings"));
     }
   }
 }

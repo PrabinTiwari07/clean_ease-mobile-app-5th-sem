@@ -66,53 +66,52 @@ class _HomeScreenViewState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal,
-        title: Row(
-          children: [
-            const CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage('assets/images/image1.jpg'),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Prabin Tiwari',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: Colors.white),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    'Jorpati',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(color: Colors.white70),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+          backgroundColor: Colors.teal,
+          title: Row(
+            children: [
+              const CircleAvatar(
+                radius: 20,
+                backgroundImage: AssetImage('assets/images/light.jpg'),
               ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Prabin Tiwari',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(color: Colors.white),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Jorpati',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall
+                          ?.copyWith(color: Colors.white70),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.search, color: Colors.white),
+              onPressed: () {},
             ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
-      ),
+            IconButton(
+              icon: const Icon(Icons.notification_add, color: Colors.white),
+              onPressed: () {},
+            ),
+          ]),
       body: _getSelectedScreen(_selectedIndex),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -132,6 +131,8 @@ class _HomeScreenViewState extends State<Home> {
 
   Widget _buildHomeScreen() {
     final double screenWidth = MediaQuery.of(context).size.width;
+    final ScrollController scrollController =
+        ScrollController(); // ✅ Create new instance
 
     return SingleChildScrollView(
       child: Padding(
@@ -148,7 +149,7 @@ class _HomeScreenViewState extends State<Home> {
                 children: [
                   Text(
                     'Our Services',
-                    style: Theme.of(context).textTheme.displayMedium,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                   const SizedBox(height: 10),
                   BlocBuilder<ServiceBloc, ServiceState>(
@@ -162,7 +163,20 @@ class _HomeScreenViewState extends State<Home> {
                           return const Center(
                               child: Text("No services available"));
                         }
-                        return _buildServiceGrid(state.services);
+                        return SizedBox(
+                          height:
+                              350, // ✅ Set a fixed height for scrollable grid
+                          child: Scrollbar(
+                            thumbVisibility: true, // ✅ Works with controller
+                            controller:
+                                scrollController, // ✅ New local ScrollController
+                            child: SingleChildScrollView(
+                              controller:
+                                  scrollController, // ✅ Attach the same controller here
+                              child: _buildServiceGrid(state.services),
+                            ),
+                          ),
+                        );
                       }
                       return const Center(child: Text('Fetching services...'));
                     },
@@ -185,7 +199,7 @@ class _HomeScreenViewState extends State<Home> {
                 children: [
                   Text(
                     'Price List',
-                    style: Theme.of(context).textTheme.displayMedium,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                   IconButton(
                     onPressed: () {
@@ -225,7 +239,7 @@ class _HomeScreenViewState extends State<Home> {
                 children: [
                   Text(
                     'Our Offers',
-                    style: Theme.of(context).textTheme.displayMedium,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                   const SizedBox(height: 10),
                   _buildPromotionalBanner(),
@@ -249,17 +263,29 @@ class _HomeScreenViewState extends State<Home> {
       ),
       items: [
         {
-          'title': '20% Off on Dry Cleaning!',
+          'title': '15% Off on Dry Cleaning!',
           'description':
               'Hurry up! Offer ends in ${_getRemainingDays(offerEndDate)} days!',
           'color': Colors.lightBlue.shade400,
           'image': 'assets/images/folded clothes.png',
         },
         {
-          'title': 'Flat 15% Off on Shoe Cleaning!',
+          'title': 'Flat 20% Discount on shoe cleaning',
           'description': 'Limited time offer. Don\'t miss out!',
           'color': Colors.blue.shade300,
           'image': 'assets/images/shoe.jpg',
+        },
+        {
+          'title': 'Flat 5% Discount on all services',
+          'description': 'Grab the offer in time',
+          'color': Colors.blue.shade300,
+          'image': 'assets/images/best_laundry.jpg',
+        },
+        {
+          'title': 'Flat 10% Discount on ironing',
+          'description': 'Limited time offer. Don\'t miss out!',
+          'color': Colors.blue.shade300,
+          'image': 'assets/images/iron.jpg',
         },
       ].map((offer) {
         return _buildOfferCard(offer);
@@ -395,6 +421,7 @@ class _HomeScreenViewState extends State<Home> {
 }
 
 /// ✅ Dynamically builds service grid from fetched services
+/// ✅ Dynamically builds a scrollable service grid
 Widget _buildServiceGrid(List<ServiceEntity> services) {
   return LayoutBuilder(
     builder: (context, constraints) {
@@ -402,7 +429,8 @@ Widget _buildServiceGrid(List<ServiceEntity> services) {
 
       return GridView.builder(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        physics:
+            const NeverScrollableScrollPhysics(), // ✅ Prevents GridView from scrolling independently
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16.0,
@@ -420,8 +448,12 @@ Widget _buildServiceGrid(List<ServiceEntity> services) {
 
 /// ✅ Builds an individual service card with navigation
 Widget _buildServiceCard(BuildContext context, ServiceEntity service) {
+  // final String imageUrl = service.image.isNotEmpty
+  //     ? 'http://10.0.2.2:3000${service.image}'
+  //     : 'https://via.placeholder.com/150';
+
   final String imageUrl = service.image.isNotEmpty
-      ? 'http://10.0.2.2:3000${service.image}'
+      ? 'http://192.168.1.71:3000${service.image}'
       : 'https://via.placeholder.com/150';
 
   return GestureDetector(

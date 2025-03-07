@@ -1,6 +1,6 @@
 import 'package:clean_ease/app/di/di.dart';
 import 'package:clean_ease/features/profile/domain/use_case/get_profile_use_case.dart';
-import 'package:clean_ease/features/profile/presentation/view_model/profile_block.dart';
+import 'package:clean_ease/features/profile/presentation/view_model/profile_bloc.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_event.dart';
 import 'package:clean_ease/features/profile/presentation/view_model/profile_state.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +38,9 @@ class EditProfileView extends StatelessWidget {
                           CircleAvatar(
                             radius: 60,
                             backgroundImage: state.profile.image.isNotEmpty
-                                ? NetworkImage(state.profile.image)
-                                : const AssetImage(
-                                        'assets/images/default_avatar.png')
+                                ? NetworkImage(
+                                    _formatImageUrl(state.profile.image))
+                                : const AssetImage('assets/images/goats.jpg')
                                     as ImageProvider,
                           ),
                           Positioned(
@@ -131,6 +131,15 @@ class EditProfileView extends StatelessWidget {
       ),
     );
   }
+}
+
+// Function to Correct Image URL
+String _formatImageUrl(String imageUrl) {
+  if (imageUrl.startsWith('http')) {
+    return imageUrl.replaceFirst(
+        'http://localhost:3000', 'http://192.168.1.71:3000');
+  }
+  return 'http://192.168.1.71:3000$imageUrl';
 }
 
 // ✅ Custom Text Field Widget for Reusability

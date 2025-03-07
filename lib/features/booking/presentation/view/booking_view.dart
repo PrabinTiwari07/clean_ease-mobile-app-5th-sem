@@ -1,12 +1,16 @@
-import 'package:clean_ease/app/di/di.dart';
-import 'package:clean_ease/features/booking/presentation/view_model/booking_block.dart';
+import 'package:clean_ease/features/booking/presentation/view/booking_history_view.dart';
+import 'package:clean_ease/features/booking/presentation/view_model/booking_bloc.dart';
+import 'package:clean_ease/features/booking/presentation/view_model/booking_event.dart';
+import 'package:clean_ease/features/booking/presentation/view_model/booking_state.dart';
+import 'package:clean_ease/features/service/domain/entity/service_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class BookingView extends StatefulWidget {
-  final String serviceId;
-  const BookingView({super.key, required this.serviceId});
+  final ServiceEntity service; // ✅ Full service details passed
+
+  const BookingView({super.key, required this.service});
 
   @override
   _BookingViewState createState() => _BookingViewState();
@@ -15,9 +19,11 @@ class BookingView extends StatefulWidget {
 class _BookingViewState extends State<BookingView> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  final TextEditingController pickupController = TextEditingController();
+  final TextEditingController dropOffController = TextEditingController();
 
+  /// ✅ Function to pick date & time
   void _pickDateTime(BuildContext context) async {
-    // Pick a Date
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -26,7 +32,6 @@ class _BookingViewState extends State<BookingView> {
     );
 
     if (pickedDate != null) {
-      // Pick a Time
       TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
@@ -41,10 +46,27 @@ class _BookingViewState extends State<BookingView> {
     }
   }
 
-  void _confirmBooking(BuildContext context, String serviceId) {
+  /// ✅ Function to get full image URL
+  String getFullImageUrl(String imagePath) {
+    // const String baseUrl = "http://10.0.2.2:3000";
+    const String baseUrl = "http://192.168.1.71:3000";
+
+    return imagePath.startsWith("http") ? imagePath : "$baseUrl$imagePath";
+  }
+
+  /// ✅ Function to confirm booking
+  void _confirmBooking(BuildContext context) {
     if (selectedDate == null || selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please select a date and time!")),
+      );
+      return;
+    }
+
+    if (pickupController.text.isEmpty || dropOffController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Please enter pickup and drop-off locations!")),
       );
       return;
     }
@@ -54,65 +76,183 @@ class _BookingViewState extends State<BookingView> {
 
     context.read<BookingBloc>().add(
           BookServiceEvent(
-            serviceId: widget.serviceId,
+            serviceId: widget.service.serviceId,
             date: formattedDate,
             time: formattedTime,
-            pickupLocation: "User's Address",
-            dropOffLocation: "Service Location",
+            pickupLocation: pickupController.text,
+            dropOffLocation: dropOffController.text,
           ),
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<BookingBloc>(), // ✅ Inject `BookingBloc` directly
+    return GestureDetector(
+      onTap: () => FocusScope.of(context)
+          .unfocus(), // ✅ Hides keyboard when tapping outside
       child: Scaffold(
-        appBar: AppBar(title: const Text("Booking Page")),
+        resizeToAvoidBottomInset: true, // ✅ Prevents overflow
+        appBar: AppBar(
+          title: const Text("Booking Page"),
+          backgroundColor: Colors.teal, // ✅ Matching theme
+          centerTitle: true,
+          elevation: 2,
+        ),
         body: BlocConsumer<BookingBloc, BookingState>(
           listener: (context, state) {
-            if (state is BookingSuccess) {
+            if (state is BookingSuccess || state is BookingError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                    content: Text("Booking Confirmed Successfully!")),
+                  content: Text("✅ Booking Confirmed Successfully!"),
+                  backgroundColor: Colors.green, // ✅ Success toast
+                ),
               );
-              Future.delayed(const Duration(seconds: 2), () {
-                Navigator.pop(context);
+
+              Future.delayed(const Duration(seconds: 1), () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BookingHistoryView()),
+                );
               });
-            } else if (state is BookingError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
             }
           },
           builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Booking for: Service",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  const Text("Price: \$9.00",
-                      style: TextStyle(fontSize: 16, color: Colors.green)),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _pickDateTime(context),
-                    child: Text(selectedDate == null || selectedTime == null
-                        ? "Select Date & Time"
-                        : "Selected: ${DateFormat('yyyy-MM-dd').format(selectedDate!)} at ${selectedTime!.format(context)}"),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _confirmBooking(context, "service_id_123"),
-                    child: const Text("Confirm Booking"),
-                  ),
-                  if (state is BookingLoading)
-                    const CircularProgressIndicator(),
-                ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    /// ✅ Service Card for Consistency
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          /// ✅ Service Image
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              getFullImageUrl(widget.service.image),
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.image_not_supported,
+                                      size: 100, color: Colors.grey),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          /// ✅ Service Details
+                          Text(
+                            widget.service.title,
+                            style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            "Category: ${widget.service.category}",
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text(
+                              widget.service.description,
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.black87),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Price: \$${widget.service.price.toString()}",
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// ✅ Date & Time Picker
+                    ElevatedButton(
+                      onPressed: () => _pickDateTime(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 24),
+                      ),
+                      child: Text(
+                        selectedDate == null || selectedTime == null
+                            ? "Select Date & Time"
+                            : "Selected: ${DateFormat('yyyy-MM-dd').format(selectedDate!)} at ${selectedTime!.format(context)}",
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    /// ✅ Pickup & Drop-off Fields
+                    TextField(
+                      controller: pickupController,
+                      decoration: InputDecoration(
+                        labelText: "Pickup Location",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: dropOffController,
+                      decoration: InputDecoration(
+                        labelText: "Drop-Off Location",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    /// ✅ Confirm Booking Button
+                    ElevatedButton(
+                      onPressed: () => _confirmBooking(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 14, horizontal: 36),
+                      ),
+                      child: const Text("Confirm Booking",
+                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -121,104 +261,3 @@ class _BookingViewState extends State<BookingView> {
     );
   }
 }
-
-// import 'package:clean_ease/features/booking/presentation/view_model/booking_block.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-
-// import '../view_model/booking_event.dart';
-// import '../view_model/booking_state.dart';
-
-// class BookingView extends StatelessWidget {
-//   final String userId;
-//   final String serviceId; // ✅ Backend expects serviceId, not serviceTitle
-//   final String date;
-//   final String time;
-
-//   const BookingView({
-//     super.key,
-//     required this.userId,
-//     required this.serviceId, // ✅ Change from serviceTitle to serviceId
-//     required this.date,
-//     required this.time,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Book Service"),
-//         centerTitle: true,
-//         backgroundColor: Colors.teal,
-//         foregroundColor: Colors.white,
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               "Service ID: $serviceId", // ✅ Show service ID instead of title
-//               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//             ),
-//             const SizedBox(height: 8),
-//             Text(
-//               "Date: $date",
-//               style: const TextStyle(fontSize: 16, color: Colors.black),
-//             ),
-//             const SizedBox(height: 8),
-//             Text(
-//               "Time: $time",
-//               style: const TextStyle(fontSize: 16, color: Colors.black),
-//             ),
-//             const SizedBox(height: 16),
-//             BlocConsumer<BookingBloc, BookingState>(
-//               listener: (context, state) {
-//                 if (state is BookingSuccess) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     SnackBar(content: Text(state.message)),
-//                   );
-//                 } else if (state is BookingFailure) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     SnackBar(content: Text(state.error)),
-//                   );
-//                 }
-//               },
-//               builder: (context, state) {
-//                 if (state is BookingLoading) {
-//                   return const Center(child: CircularProgressIndicator());
-//                 }
-
-//                 return SizedBox(
-//                   width: double.infinity,
-//                   child: ElevatedButton(
-//                     onPressed: () {
-//                       context.read<BookingBloc>().add(
-//                             CreateBookingEvent({
-//                               'userId': userId, // ✅ Backend requires userId
-//                               'serviceId':
-//                                   serviceId, // ✅ Backend requires serviceId
-//                               'date': date,
-//                               'time': time,
-//                             }),
-//                           );
-//                     },
-//                     style: ElevatedButton.styleFrom(
-//                       backgroundColor: Colors.teal, // Teal-colored button
-//                       shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(8),
-//                       ),
-//                       padding: const EdgeInsets.symmetric(vertical: 12),
-//                     ),
-//                     child: const Text("Confirm Booking",
-//                         style: TextStyle(color: Colors.white)),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

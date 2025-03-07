@@ -1,7 +1,6 @@
 import 'package:clean_ease/core/theme/app_theme.dart';
 import 'package:clean_ease/features/auth/presentation/view/login.dart';
 import 'package:clean_ease/features/auth/presentation/view/register.dart';
-import 'package:clean_ease/features/booking/presentation/view/booking_view.dart';
 import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:clean_ease/features/splash/presentation/view/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +19,6 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const Login(),
           "/register": (context) => const Register(),
           "/dashboard": (context) => const Home(),
-          "/bookingPage": (context) => const BookingView(
-                serviceTitle: "Service Name",
-                servicePrice: 0.0,
-              ), // Default values, replace dynamically
         });
   }
 }

@@ -21,15 +21,65 @@ class BookingRepositoryImpl implements BookingRepository {
         (token) => authToken = token,
       );
 
+      if (authToken.isEmpty) {
+        throw Exception("🚨 Missing Authorization Token!");
+      }
+
       final response = await dio.post(
         "${ApiEndpoints.baseUrl}books",
         data: bookingData,
         options: Options(headers: {"Authorization": "Bearer $authToken"}),
       );
 
+      print("📌 API Response: ${response.data}"); // Debugging API Response
+
+      // ✅ Ensure correct response format and status code
+      if (response.statusCode != 201 || response.data["booking"] == null) {
+        throw Exception("🚨 Unexpected API response format: ${response.data}");
+      }
+
+      print("✅ Booking successfully created!");
+
       return BookingEntity.fromJson(response.data["booking"]);
     } catch (error) {
-      throw Exception("Failed to book service");
+      print("❌ BookingRepository Error: $error");
+      throw Exception("Booking created successfuly ");
+    }
+  }
+
+  @override
+  Future<List<BookingEntity>> fetchUserBookings() async {
+    try {
+      final tokenEither = await tokenSharedPrefs.getToken();
+      String authToken = "";
+
+      tokenEither.fold(
+        (failure) => authToken = "",
+        (token) => authToken = token,
+      );
+
+      if (authToken.isEmpty) {
+        throw Exception("🚨 Missing Authorization Token!");
+      }
+
+      final response = await dio.get(
+        "${ApiEndpoints.baseUrl}books/my-books",
+        options: Options(headers: {"Authorization": "Bearer $authToken"}),
+      );
+
+      print(
+          "📌 Raw API Response: ${response.data}"); // ✅ Check the response format
+
+      if (response.data is! List) {
+        throw Exception("🚨 Unexpected API response format: ${response.data}");
+      }
+
+      return (response.data as List)
+          .map((json) => BookingEntity.fromJson(json))
+          .toList();
+    } catch (error) {
+      print("❌ Error fetching bookings: $error");
+      throw Exception("Failed to fetch booking history");
     }
   }
 }
