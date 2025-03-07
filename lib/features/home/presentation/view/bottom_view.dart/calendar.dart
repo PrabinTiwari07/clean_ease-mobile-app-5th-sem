@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/booking/presentation/view/booking_history_view.dart';
-import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/profile_view.dart';
+import 'package:clean_ease/features/home/presentation/view/home_view/home.dart';
 import 'package:clean_ease/features/service/presentation/view/service_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

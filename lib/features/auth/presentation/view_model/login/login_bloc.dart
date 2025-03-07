@@ -1,7 +1,7 @@
 import 'package:clean_ease/app/di/di.dart';
 import 'package:clean_ease/features/auth/domain/use_case/login_usecase.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/signup/register_bloc.dart';
-import 'package:clean_ease/features/home/presentation/home.dart';
+import 'package:clean_ease/features/home/presentation/view/home_view/home.dart';
 import 'package:clean_ease/features/home/presentation/view_model/home_cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';

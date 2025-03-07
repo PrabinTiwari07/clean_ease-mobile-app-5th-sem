@@ -3,8 +3,8 @@ import 'package:clean_ease/core/common/navigator.dart';
 import 'package:clean_ease/features/booking/presentation/view_model/booking_bloc.dart';
 import 'package:clean_ease/features/booking/presentation/view_model/booking_event.dart';
 import 'package:clean_ease/features/booking/presentation/view_model/booking_state.dart';
-import 'package:clean_ease/features/home/presentation/home.dart';
 import 'package:clean_ease/features/home/presentation/view/bottom_view.dart/calendar.dart';
+import 'package:clean_ease/features/home/presentation/view/home_view/home.dart';
 import 'package:clean_ease/features/profile/presentation/view/profile_view.dart';
 import 'package:clean_ease/features/service/presentation/view/service_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -56,10 +56,8 @@ class BookingHistoryView extends StatelessWidget {
             return const Center(child: Text("Fetching booking history..."));
           },
         ),
-
-        // ✅ Bottom Navigation Bar (Responsive Navigation)
         bottomNavigationBar: CustomBottomNavigationBar(
-          currentIndex: 4, // ✅ Highlights "My Booking" tab
+          currentIndex: 4,
           onTap: (index) {
             if (index != 4) {
               Navigator.pushAndRemoveUntil(
@@ -95,7 +93,7 @@ class BookingCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ✅ Responsive Image
+            //  Responsive Image
             if (booking.service.image.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
@@ -108,7 +106,7 @@ class BookingCard extends StatelessWidget {
               ),
             const SizedBox(height: 8),
 
-            // ✅ Service Title
+            //  Service Title
             Text(
               booking.service.title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -117,7 +115,7 @@ class BookingCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
 
-            // ✅ Service Price
+            //  Service Price
             Text(
               "Price: \$${booking.service.price.toStringAsFixed(2)}",
               style: const TextStyle(
@@ -128,7 +126,7 @@ class BookingCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
 
-            // ✅ Service Category
+            //  Service Category
             Text(
               "Category: ${booking.service.category}",
               style: const TextStyle(fontSize: 14, color: Colors.grey),
@@ -137,7 +135,7 @@ class BookingCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
 
-            // ✅ Description (Limited lines)
+            //  Description (Limited lines)
             Text(
               booking.service.description,
               style: const TextStyle(fontSize: 14),
@@ -146,7 +144,7 @@ class BookingCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // ✅ Booking Date & Time
+            //  Booking Date & Time
             Row(
               children: [
                 Expanded(
@@ -162,7 +160,7 @@ class BookingCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
 
-            // ✅ Drop-off Location
+            //  Drop-off Location
             Text(
               "Drop-off: ${booking.dropOffLocation}",
               style: const TextStyle(fontSize: 14),
@@ -171,7 +169,7 @@ class BookingCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // ✅ Booking Status
+            //  Booking Status
             Text(
               "Status: ${booking.status.toUpperCase()}",
               style: TextStyle(

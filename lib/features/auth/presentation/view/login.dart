@@ -1,6 +1,6 @@
 import 'package:clean_ease/features/auth/presentation/view/register.dart';
 import 'package:clean_ease/features/auth/presentation/view_model/login/login_bloc.dart';
-import 'package:clean_ease/features/home/presentation/home.dart';
+import 'package:clean_ease/features/home/presentation/view/home_view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -34,7 +34,7 @@ class _LoginState extends State<Login> {
               textColor: Colors.white,
             );
 
-            // ✅ Redirect to Home after toast message
+            //  Redirect to Home after toast message
             Future.delayed(const Duration(seconds: 1), () {
               Navigator.pushReplacement(
                 context,
@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
               );
             });
           } else {
-            // ✅ Show error toast for invalid credentials
+            //  Show error toast for invalid credentials
             Fluttertoast.showToast(
               msg: "Invalid email or password!",
               toastLength: Toast.LENGTH_SHORT,
